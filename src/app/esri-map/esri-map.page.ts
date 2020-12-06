@@ -147,59 +147,17 @@ export class EsriMapPage implements OnInit {
     }
   }
 
-  currentLocation(){  
 
-    this.view.center=[this.dataLocation.coords.longitude,
-    this.dataLocation.coords.latitude];
-    /*this.view.zoom =18; */   
-
-  }
 
 
   ngOnInit() {
     this.initializeMap();
     
-    /*this.initCurrentLocation();*/
-    
-    /*this.initializeMap(resp.coords.longitude,resp.coords.latitude);*/
+
   }
-
-/*
- initCurrentLocation(){
-  console.log('holass')
-  this.geolocation.getCurrentPosition().then((resp) => {
-
-    
-    this.view.center=[resp.coords.longitude,resp.coords.latitude];
-    this.view.zoom =18;  
-    
-
-   }).catch((error) => {
-     console.log('Error getting location', error);
-   });
- } 
-*/
-
 
 
  getCurrentPoint(){  
-
-/*
-    this.watch = this.geolocation.watchPosition();*/
-/*
-    this.subscription=this.watch.subscribe((data) => {
-        if(data ){
-          this.dataLocation=data;  
-          console.log('data>>>',data);          
-          
-          this.addCurrentPoint(data);
-          this.currentLocation();
-          
-      }
-    
-    });
-*/
-
 
   let options = {timeout: 10000, enableHighAccuracy: true, maximumAge: 3600};
 
@@ -208,7 +166,7 @@ export class EsriMapPage implements OnInit {
     
     
     if(data){
-      console.log('data>>>',data);    
+        
       this.dataLocation=data;     
       this.addCurrentPoint(data);
       this.currentLocation();
@@ -220,7 +178,13 @@ export class EsriMapPage implements OnInit {
     
 
   }
+  currentLocation(){  
 
+    this.view.center=[this.dataLocation.coords.longitude,
+    this.dataLocation.coords.latitude];
+    /*this.view.zoom =18; */   
+
+  }
 
   
   async addCurrentPoint(resp){
@@ -266,9 +230,6 @@ export class EsriMapPage implements OnInit {
      console.error("EsriLoader: ", error);
    }
 
-
-
-
   }
 
 
@@ -282,8 +243,7 @@ export class EsriMapPage implements OnInit {
 
   ionViewDidLeave() {  
     clearInterval(this.myInterval);
-    /*
-       this.subscription.unsubscribe();*/
+    
 }
 
   async addPoints(){

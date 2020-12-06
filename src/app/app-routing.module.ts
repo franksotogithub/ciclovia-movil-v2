@@ -9,7 +9,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'esri-map',
+    redirectTo: 'leaflet-map',
     pathMatch: 'full'
   },
   {
@@ -40,6 +40,10 @@ const routes: Routes = [
   {
     path: 'tramo',
     loadChildren: () => import('./tramo/tramo.module').then( m => m.TramoPageModule)
+  },
+  {
+    path: 'leaflet-map',
+    loadChildren: () => import('./leaflet-map/leaflet-map.module').then( m => m.LeafletMapPageModule)
   },
 ];
 

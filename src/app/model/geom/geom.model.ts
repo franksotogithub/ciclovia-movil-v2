@@ -5,7 +5,7 @@ export class GeomModel implements  GeomRequest {
   
  
   type: string;
-  coordinates : string;
+  coordinates : any;
 
   
 
