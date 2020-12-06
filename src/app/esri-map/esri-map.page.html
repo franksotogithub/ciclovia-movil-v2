@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <img src="assets/img/geocleta.jpg"  style="display:inline-block" height="40px" > 
+    <ion-title style="display:inline-block" >Geocleta</ion-title>
+    <ion-button  style="display:inline-block" slot="end" size="small" type="submit"  color="primary" (click)="logout()"> <ion-icon name="exit"></ion-icon> </ion-button>
+    <!--<div img="./assets/img/geotecla.jpg" style="height: 500px;
+    width: 100%;" ></div>-->
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+  
+  <div #mapViewNode  id="mapa">
+
+  
+   </div>
+   <div #addPoint id="addPoint">
+      <ion-fab-button  size="small" (click)="add()"><ion-icon name="add"></ion-icon></ion-fab-button>           
+   </div>
+
+   <div #hideButtonDiv id="hideButtonDiv" >
+
+    <ion-fab-button  size="small" (click)="hide()" *ngIf="!isHide"><ion-icon name="arrow-up"></ion-icon></ion-fab-button>
+    
+    <ion-fab-button  size="small" (click)="hide()" *ngIf="isHide">
+      <ion-icon name="arrow-down"></ion-icon>
+
+    </ion-fab-button>
+  </div>
+
+  <div (click)="currentLocation()"  #location id="location" class="esri-component esri-locate esri-widget--button esri-widget" role="button" tabindex="0" aria-label="Buscar mi ubicación" title="Buscar mi ubicación">
+    <span aria-hidden="true" class="esri-icon esri-icon-locate"></span>
+    <span class="esri-icon-font-fallback-text">
+      Buscar mi ubicación</span>
+    </div>
+
+
+ 
+  <div #basemapGalleryDiv id="basemapGalleryDiv" [class.hide]="isHide" > 
+    
+
+  </div>
+ 
+   
+   <link rel="stylesheet" href="https://js.arcgis.com/4.17/esri/themes/light/main.css">
+ <style>
+   /*
+   .esri-ui-corner .esri-component {
+    box-shadow: 0 0x 0px!important;
+}*/
+ </style>
+
+ 
+</ion-content>
+
+<!-- arrow-dropleft-circle -->
