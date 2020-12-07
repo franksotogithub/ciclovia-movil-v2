@@ -130,10 +130,10 @@ export class ElementTramoPage implements OnInit {
   }
 
   initVia(){
+  
+    this.tramos=JSON.parse( localStorage.getItem("tramos"));
 
-    let via: CicloViaModel= JSON.parse( localStorage.getItem("via"));
-    let id=(via.OBJECTID)?via.OBJECTID:null;
-    this.getTramos(id);
+
   }
 
 
@@ -155,7 +155,6 @@ export class ElementTramoPage implements OnInit {
       this.elemento.longitud= resp.coords.longitude;
 
       }).catch((error) => {
-        
         
         
  
@@ -194,11 +193,18 @@ export class ElementTramoPage implements OnInit {
       message:'Por favor espere..'
     });
     
+
     (await this.loading).present();
   
 
-    /*(await this.loading).present();*/
-      
+    if(this.fileTemp){      
+      let name=this.readFile(this.fileTemp);
+
+    }
+    else{
+      this.createElement();
+    }
+      /*
     
     if(this.elemento.id){
       
@@ -214,7 +220,7 @@ export class ElementTramoPage implements OnInit {
 
       
 
-    }    
+    }    */
   }
 
 

@@ -295,7 +295,7 @@ export class EsriMapPage implements OnInit {
           });
 
           pointGraphic.attributes = {
-            "tramo": p.tramo.nombre_via_y_km,
+            "tramo": p.tramo.nombre,
             "elemento": p.elemento,
             
           };

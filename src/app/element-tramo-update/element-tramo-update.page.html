@@ -9,15 +9,19 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid>
+  <ion-grid *ngIf="elemento.tramo">
 
     <ion-row>
       <ion-col size="12">
         <div>
           <ion-label>Tramo: </ion-label>
+          <ion-input> {{elemento.tramo.nombre_via}}</ion-input>
         </div>      
       </ion-col>
+      
+      
 
+      <!--
       <ion-col size="10">
         <div> 
           <ion-item>           
@@ -32,12 +36,12 @@
                 <ng-template ionicSelectableItemTemplate let-tramo="item"> 
                   {{ tramo.nombre}} (distancia: {{tramo.distancia}} distrito: {{tramo.distrito}} )
 
-                  <!--<ng-container *ngIf="tramo.desde">  ( desde: {{tramo.desde}} hasta:  {{tramo.hasta}})</ng-container>-->
                 </ng-template>
           </ionic-selectable>
         </ion-item>
         </div>
-      </ion-col>
+      </ion-col>-->
+      <!--
       <ion-col size="2">
         <div> 
           <ion-button  
@@ -49,7 +53,7 @@
         </div>
         
       </ion-col>
-      
+    -->
       <ion-col size="12">
         <div> 
 
@@ -70,7 +74,7 @@
 
     </ion-row>
 
-<ion-row  *ngIf="elemento.elemento">
+<ion-row  >
 
   
     <ion-col size="12">
@@ -128,14 +132,26 @@
       > Guardar</ion-button>
 
     </ion-col>
-   <!--
+
+
+    <ion-col size="12">
+      <ion-button 
+      expand ="full" 
+      shape="full"  
+      color ="dark" 
+    
+    (click)="eliminar()"
+      > Eliminar</ion-button>
+
+    </ion-col>
+<!--   
     <ion-col size="12">
 
 
       <ion-progress-bar [value]="uploadProgress" color="tertiary"> </ion-progress-bar>
 
-    </ion-col>-->
-  
+    </ion-col>
+  -->
 </ion-row>
     
   </ion-grid>

@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>leaflet-map</ion-title>
+    <img src="assets/img/geocleta.jpg"  style="display:inline-block" height="40px" > 
+   
+    <ion-title style="display:inline-block" >Geocleta</ion-title>
+    <ion-button  style="display:inline-block" slot="end" size="small" type="submit"  color="primary" (click)="logout()"> <ion-icon name="exit"></ion-icon> </ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -18,7 +21,7 @@
       </div>
       
         <ion-fab-button id="addPoint" (click)="add()"><ion-icon name="add"></ion-icon></ion-fab-button>
-    
+        <ion-fab-button id="currentLocation" (click)="currentLocation()"><ion-icon name="location"></ion-icon></ion-fab-button>
     </div>
   </div>
 

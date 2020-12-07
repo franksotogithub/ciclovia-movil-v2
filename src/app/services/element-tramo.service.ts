@@ -56,6 +56,37 @@ export class ElementTramoService {
   }
 
 
+  getElementTramo(id:number):Observable<ElementTramoRequets>{
+
+    
+    
+    return this.http.get( `${this.API_URL_ELEMENT_TRAMO}${id}`).pipe(
+      map((res: GeneralV1Request<ElementTramoRequets>) =>{
+      let response = null;
+      if (res.status_code === 200) {
+        response = res.result;
+      } else {
+        throw new Error('No se ha logrado obtener datos del servidor');
+      }
+      return response;
+    }
+
+    ),
+
+    catchError(err => {
+      console.log('err>>>',err);
+      if (typeof(err) === 'string') {
+       
+      } else {
+     
+      }
+      return of(null);
+    }),
+    
+    
+    );
+  }
+
   createElementTramo(elementTramo: ElementTramoRequets ){
     const requestBody =elementTramo;
     return this.http.post(this.API_URL_ELEMENT_TRAMO,requestBody).pipe( map((res: GeneralV1Request<ElementTramoRequets>) => {
@@ -86,7 +117,7 @@ export class ElementTramoService {
 
   updateElementTramo(id:number,elementTramo: ElementTramoRequets ){
     const requestBody =elementTramo;
-    return this.http.post(`${this.API_URL_ELEMENT_TRAMO}${id}`,requestBody).pipe( map((res: GeneralV1Request<ElementTramoRequets>) => {
+    return this.http.post(`${this.API_URL_ELEMENT_TRAMO}update/${id}`,requestBody).pipe( map((res: GeneralV1Request<ElementTramoRequets>) => {
       let response = null;
       if (res.status_code === 200) {
         const result = res.result;
@@ -116,7 +147,7 @@ export class ElementTramoService {
   
   deleteElementTramo(id:number){
     const requestBody ={};
-    return this.http.post(`${this.API_URL_ELEMENT_TRAMO}${id}`,requestBody).pipe( map((res: GeneralV1Request<ElementTramoRequets>) => {
+    return this.http.post(`${this.API_URL_ELEMENT_TRAMO}delete/${id}`,requestBody).pipe( map((res: GeneralV1Request<ElementTramoRequets>) => {
       let response = null;
       if (res.status_code === 200) {
         const result = res.result;

@@ -12,6 +12,8 @@ import { DistritoService } from '../services/distrito.service';
 import { CicloViaModel } from '../model/ciclo_via/ciclo_via.model';
 import { CicloViaRequets } from '../model/ciclo_via/ciclo_via.requets';
 import { GeomModel } from '../model/geom/geom.model';
+import { TramoService } from '../services/tramo.service';
+import { TramoModel } from '../model/tramo/tramo.model';
 
 @Component({
   selector: 'app-leaflet-map',
@@ -33,8 +35,10 @@ export class LeafletMapPage implements OnInit {
     private elementTramoService: ElementTramoService,
     private navCtrl : NavController,
     private authService: AuthService,
-    private viaService : ViaService,
+    /*private viaService : ViaService,*/
     private distritoService: DistritoService,
+    private tramoService : TramoService,
+
     ) { }
 
   ngOnInit() {
@@ -56,13 +60,27 @@ export class LeafletMapPage implements OnInit {
  
  loadMap(){
     
+
+
   this.map = new Map("mapa").setView([17.3850,78.4867], 13);
+
+  /*
   tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      { attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors,<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'})
+      { 
+        maxZoom: 22,
+        maxNativeZoom: 19,
+        attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors,<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'})
       .addTo(this.map); // This line is added to add the Tile Layer to our map
-  
+  */
+ tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+ { 
+   maxZoom: 21,
+   maxNativeZoom: 20,
+   subdomains:['mt0','mt1','mt2','mt3'],
+   
+  })
+ .addTo(this.map); // This line is added to add the Tile Layer to our map
       this.getCurrentPoint(true);
-     
   }
     
 
@@ -95,26 +113,30 @@ export class LeafletMapPage implements OnInit {
 
     
   currentLocation(zoom?:number){  
-    const location=(zoom)? this.map.setView(new L.LatLng( this.dataLocation.coords.latitude, this.dataLocation.coords.longitude), 18):this.map.setView(new L.LatLng( this.dataLocation.coords.latitude, this.dataLocation.coords.longitude));
-
+    const location=(zoom)? this.map.setView(new L.LatLng( this.dataLocation.coords.latitude, this.dataLocation.coords.longitude),20):this.map.setView(new L.LatLng( this.dataLocation.coords.latitude, this.dataLocation.coords.longitude));
   }
 
   removeMarker(marker){
     this.map.removeLayer(marker)
   }
 
+
     addMarker(latitude, longitude){
      return L.marker([latitude, longitude]).addTo(this.map);
     }
 
     addMarkerCurrentLocation(latitude, longitude){
+      
+      
+      var current_location = L.icon({
+        iconUrl: 'assets/img/current_location.png',
+        iconSize:     [30,30],
+      
+      });
+       
 
-      return  L.circle([latitude, longitude], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 5
-      }).addTo(this.map);
+      return L.marker([latitude, longitude], {icon: current_location}).addTo(this.map);
+
     }
 
 
@@ -135,7 +157,8 @@ export class LeafletMapPage implements OnInit {
         if(p.latitud && p.longitud){          
           console.log('p.latitud , p.longitud>>',p.latitud , p.longitud);
           const marker=this.addMarker(p.latitud,p.longitud);
-          
+          marker.bindPopup(`Tramo: ${p.tramo.nombre}<br>Elemento: ${p.elemento} <br> <a href="/element-tramo-update/${p.id}">Ver`  
+          )
           this.elementTramoMarkerList.push(marker);
         }
 
@@ -151,29 +174,33 @@ export class LeafletMapPage implements OnInit {
 
     addVias(){
 
-      this.viaService.getAllVia().subscribe(res=>{
-        let listVia=res.map(r=> {return new CicloViaModel(r)});
-        
+
+      this.tramoService.getTramos().subscribe(res=>{
+        let listVia = res.map(r=>{return new TramoModel(r)});
+
         listVia.map(v=>{
           
-          let geom= new GeomModel(JSON.parse(v.GeoJson));
-          console.log('geom.coordinates>>',geom.coordinates);
+          let geom= new GeomModel(JSON.parse(v.geo_json));
+          
           
           let c:any[]=geom.coordinates;
 
-          let coords=c.map(element => {
-            return [element[1],element[0]]
-          });
-
-          console.log(coords);
-         var polygon = L.polyline(
-          coords
-        ).addTo(this.map);
-
+          if(geom && c){
+            let coords=c.map(element => {
+              return [element[1],element[0]]
+            });
+  
+            console.log(coords);
+           var polygon = L.polyline(
+            coords
+          ).addTo(this.map);
+  
+          }
+      
         
   
         });
-        
+
       });
 
 
@@ -182,30 +209,16 @@ export class LeafletMapPage implements OnInit {
 
 
   add(){
-    /*this.elementTramoService.setPoint(this.dataLocation);*/
 
-    this.viaService.getViaCercana(this.dataLocation.coords.longitude, this.dataLocation.coords.latitude).toPromise().then((resp:CicloViaRequets[])=>{
-      if(resp.length>0){
-        console.log('resp>>>',resp);
-        let via = new CicloViaModel(resp[0]);
-        localStorage.setItem("via",JSON.stringify(via));
-        this.distritoService.getDistritoCercano(this.dataLocation.coords.longitude, this.dataLocation.coords.latitude).toPromise().
-        then((resp)=>{
-          if(resp.length>0){
-            let distrito = new DistritoModel(resp[0]);
-            localStorage.setItem("distrito",JSON.stringify(distrito));
+ 
 
-          }         
-          
-          this.navCtrl.navigateForward("/element-tramo");
-        });
-        
-       
-   
-      }
-      
-      
-    });
+    this.tramoService.getTramoCercano(this.dataLocation.coords.longitude, this.dataLocation.coords.latitude).toPromise()
+    .then( (resp:TramoModel[])=>{
+
+      localStorage.setItem("tramos",JSON.stringify(resp));
+
+      this.navCtrl.navigateForward("/element-tramo");
+    })
     
   }
 

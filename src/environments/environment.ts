@@ -14,7 +14,8 @@ export const environment = {
     messagingSenderId: "374394824095",
     appId: "1:374394824095:web:a018d069ed5f4db76c89aa",
     measurementId: "G-6F68393H2X"
-  }
+  },
+  api_photo: 'https://siu.imp.gob.pe/node/ciclovia/cicloviaapp/uploads/',
 };
 
 /*

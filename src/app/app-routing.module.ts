@@ -45,7 +45,11 @@ const routes: Routes = [
     path: 'leaflet-map',
     loadChildren: () => import('./leaflet-map/leaflet-map.module').then( m => m.LeafletMapPageModule),
     canActivate:[LoginGuard]
+  },  {
+    path: 'element-tramo-update',
+    loadChildren: () => import('./element-tramo-update/element-tramo-update.module').then( m => m.ElementTramoUpdatePageModule)
   },
+
 ];
 
 @NgModule({
