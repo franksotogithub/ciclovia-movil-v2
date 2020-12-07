@@ -21,6 +21,7 @@ import { File, IWriteOptions,FileEntry } from '@ionic-native/File/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs';
+import {LoadingController}  from  '@ionic/angular'; 
 
 const STORAGE_KEY = 'my_images';
 
@@ -99,6 +100,9 @@ export class ElementTramoPage implements OnInit {
   uploadProgress:number;
   /*file:File;*/
   fileTemp:any;
+
+  loading:any;
+
   constructor(
     private elementTramoService: ElementTramoService,
     private geolocation: Geolocation,
@@ -112,6 +116,7 @@ export class ElementTramoPage implements OnInit {
     private filePath: FilePath,
     private storage: Storage,
     private ref: ChangeDetectorRef,
+    public loadingCtrl: LoadingController
     /*private storage: AngularFireStorage*/
   ) { }
 
@@ -185,15 +190,20 @@ export class ElementTramoPage implements OnInit {
 
 
   async guardar(){
-    if(this.elemento.id){
+    this.loading =this.loadingCtrl.create({
+      message:'Por favor espere..'
+    });
+    
+    (await this.loading).present();
+  
 
-      /*this.readFile(this.updateElement,this.fileTemp);*/
+    /*(await this.loading).present();*/
+      
+    
+    if(this.elemento.id){
+      
       let name=this.readFile(this.fileTemp);
       console.log('name>>',name);
-
-
-      /*this.createElement();*/
-      /*this.uploadPicture(this.createElement);*/
 
     }
 
@@ -202,7 +212,7 @@ export class ElementTramoPage implements OnInit {
       let name=this.readFile(this.fileTemp);
       console.log('name>>',name);
 
-      /*this.createElement();*/
+      
 
     }    
   }
@@ -211,14 +221,15 @@ export class ElementTramoPage implements OnInit {
 
   updateElement(){   
       this.elementTramoService.updateElementTramo(this.elemento.id,this.elemento).subscribe(e=>{
-        this.navCtrl.navigateRoot("/esri-map"); 
+        this.navCtrl.navigateRoot("/leaflet-map"); 
       });      
   }
 
-  createElement(){
+   createElement(){
       
-      this.elementTramoService.createElementTramo(this.elemento).subscribe(e=>{
-        this.navCtrl.navigateRoot("/esri-map"); 
+      this.elementTramoService.createElementTramo(this.elemento).subscribe(async (e)=>{
+        (await this.loading).dismiss();
+        this.navCtrl.navigateRoot("/leaflet-map"); 
       });
 
   }
@@ -233,8 +244,7 @@ export class ElementTramoPage implements OnInit {
 
 
   regresar(){    
-
-    this.navCtrl.navigateBack("/esri-map");   
+    this.navCtrl.navigateForward("/leaflet-map");   
   }
 
   editarTramo(){
@@ -341,7 +351,8 @@ export class ElementTramoPage implements OnInit {
         /*formData.append('name', 'Hello');*/
         formData.append('file', imgBlob, file.name);
         this.fileService.uploadFile(formData).toPromise().then(e=>{
-            /*console.log('e>>',e['file']['filename']);*/
+            console.log('e>>',e['file']['filename']);
+            
             this.elemento.img=e['file']['filename'];
             this.createElement();
         });

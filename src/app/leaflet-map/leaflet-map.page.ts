@@ -24,6 +24,10 @@ export class LeafletMapPage implements OnInit {
   address:string[];
   dataLocation:any;
   listElementTramo :  ElementTramoModel[];
+  initZoom=18
+  currentLocationMarker:any;
+  elementTramoMarkerList:any[]=[];
+  myInterval:any;
   constructor(    
     private geolocation: Geolocation,
     private elementTramoService: ElementTramoService,
@@ -38,7 +42,14 @@ export class LeafletMapPage implements OnInit {
 
 
   ionViewDidEnter(){
-    this.loadMap();
+    if(!this.map){
+      this.loadMap();    
+      this.addVias();
+    }
+
+    this.addPoints();
+
+    this.myInterval=setInterval(()=>{ this.getCurrentPoint(false); }, 5000);
   }
  // The below function is added
   
@@ -50,30 +61,29 @@ export class LeafletMapPage implements OnInit {
       { attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors,<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'})
       .addTo(this.map); // This line is added to add the Tile Layer to our map
   
-      this.getCurrentPoint();
-      this.addPoints();
-      this.addVias();
-    }
+      this.getCurrentPoint(true);
+     
+  }
     
 
-
-
-  getCurrentPoint(){  
+  getCurrentPoint(init:boolean){  
 
     let options = {timeout: 10000, enableHighAccuracy: true, maximumAge: 3600};
   
   
     this.geolocation.getCurrentPosition(options).then((data) => {
-      
+      console.log('data>>>',data);
       
       if(data){
           
         this.dataLocation=data;     
 
-        /*this.addCurrentPoint(data);*/
 
-        this.initcurrentLocation();
-        this.addMarker(data.coords.latitude,data.coords.longitude);
+        (init)? this.currentLocation(this.initZoom):false;
+       
+        (this.currentLocationMarker)?this.removeMarker(this.currentLocationMarker):true;
+     
+        this.currentLocationMarker = this.addMarkerCurrentLocation(data.coords.latitude,data.coords.longitude);
 
 
        }
@@ -81,33 +91,42 @@ export class LeafletMapPage implements OnInit {
       console.log(JSON.stringify(error));
       });
         
-      
-  
     }
 
-    initcurrentLocation(){  
-      this.map.setView(new L.LatLng( this.dataLocation.coords.latitude, this.dataLocation.coords.longitude), 18);
-    }
     
-    
-    currentLocation(){  
+  currentLocation(zoom?:number){  
+    const location=(zoom)? this.map.setView(new L.LatLng( this.dataLocation.coords.latitude, this.dataLocation.coords.longitude), 18):this.map.setView(new L.LatLng( this.dataLocation.coords.latitude, this.dataLocation.coords.longitude));
 
-      this.map.setView(new L.LatLng( this.dataLocation.coords.latitude, this.dataLocation.coords.longitude));
-      
-    }
+  }
 
+  removeMarker(marker){
+    this.map.removeLayer(marker)
+  }
 
     addMarker(latitude, longitude){
+     return L.marker([latitude, longitude]).addTo(this.map);
+    }
 
-      /*
-      const marker = L.marker([resp.coords.latitude,resp.coords.longitude]).addTo(this.map);
-      */
-     const marker = L.marker([latitude, longitude]).addTo(this.map);
+    addMarkerCurrentLocation(latitude, longitude){
+
+      return  L.circle([latitude, longitude], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 5
+      }).addTo(this.map);
     }
 
 
-    addPoints(){
+    removePoints(){
+      this.elementTramoMarkerList.map(marker=>{
+        this.removeMarker(marker);
+      });
+      this.elementTramoMarkerList =[];
+    }
 
+    addPoints(){
+      this.removePoints();
       this.elementTramoService.getAllElementTramo().subscribe(res=>{
         this.listElementTramo=res.map(r=> {return new ElementTramoModel(r)});
         
@@ -115,8 +134,9 @@ export class LeafletMapPage implements OnInit {
           console.log(p)
         if(p.latitud && p.longitud){          
           console.log('p.latitud , p.longitud>>',p.latitud , p.longitud);
-          this.addMarker(p.latitud,p.longitud);
-          /*this.graphicsLayer.add(pointGraphic);*/
+          const marker=this.addMarker(p.latitud,p.longitud);
+          
+          this.elementTramoMarkerList.push(marker);
         }
 
   
@@ -127,14 +147,9 @@ export class LeafletMapPage implements OnInit {
 
     }
 
-    logout(){
-      this.authService.logout();
-    }
-
+  
 
     addVias(){
-
-
 
       this.viaService.getAllVia().subscribe(res=>{
         let listVia=res.map(r=> {return new CicloViaModel(r)});
@@ -171,6 +186,7 @@ export class LeafletMapPage implements OnInit {
 
     this.viaService.getViaCercana(this.dataLocation.coords.longitude, this.dataLocation.coords.latitude).toPromise().then((resp:CicloViaRequets[])=>{
       if(resp.length>0){
+        console.log('resp>>>',resp);
         let via = new CicloViaModel(resp[0]);
         localStorage.setItem("via",JSON.stringify(via));
         this.distritoService.getDistritoCercano(this.dataLocation.coords.longitude, this.dataLocation.coords.latitude).toPromise().
@@ -179,10 +195,9 @@ export class LeafletMapPage implements OnInit {
             let distrito = new DistritoModel(resp[0]);
             localStorage.setItem("distrito",JSON.stringify(distrito));
 
-          }
-         
-
-          this.navCtrl.navigateRoot("/element-tramo");
+          }         
+          
+          this.navCtrl.navigateForward("/element-tramo");
         });
         
        
@@ -193,5 +208,16 @@ export class LeafletMapPage implements OnInit {
     });
     
   }
+
+
+  ionViewDidLeave() {  
+    clearInterval(this.myInterval);
+    
+}
+
+logout(){
+  this.authService.logout();
+}
+
   
 }

@@ -62,7 +62,7 @@ export class ViaService {
       params = params.set('y', y);
     }
 
-    return this.http.get(this.API_URL_VIA,{params}).pipe(
+    return this.http.get(this.API_URL_VIA_CERCANA,{params}).pipe(
       map((res: GeneralV1Request<CicloViaRequets[]>) =>{
       let response = [];
       if (res.status_code === 200) {

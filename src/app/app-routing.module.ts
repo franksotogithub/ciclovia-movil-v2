@@ -43,7 +43,8 @@ const routes: Routes = [
   },
   {
     path: 'leaflet-map',
-    loadChildren: () => import('./leaflet-map/leaflet-map.module').then( m => m.LeafletMapPageModule)
+    loadChildren: () => import('./leaflet-map/leaflet-map.module').then( m => m.LeafletMapPageModule),
+    canActivate:[LoginGuard]
   },
 ];
 

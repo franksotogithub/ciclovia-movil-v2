@@ -178,6 +178,7 @@ export class EsriMapPage implements OnInit {
     
 
   }
+  
   currentLocation(){  
 
     this.view.center=[this.dataLocation.coords.longitude,
