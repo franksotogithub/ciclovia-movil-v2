@@ -86,7 +86,7 @@ export class ElementTramoService {
 
   updateElementTramo(id:number,elementTramo: ElementTramoRequets ){
     const requestBody =elementTramo;
-    return this.http.put(`${this.API_URL_ELEMENT_TRAMO}${id}`,requestBody).pipe( map((res: GeneralV1Request<ElementTramoRequets>) => {
+    return this.http.post(`${this.API_URL_ELEMENT_TRAMO}${id}`,requestBody).pipe( map((res: GeneralV1Request<ElementTramoRequets>) => {
       let response = null;
       if (res.status_code === 200) {
         const result = res.result;
@@ -115,8 +115,8 @@ export class ElementTramoService {
 
   
   deleteElementTramo(id:number){
-
-    return this.http.delete(`${this.API_URL_ELEMENT_TRAMO}${id}`).pipe( map((res: GeneralV1Request<ElementTramoRequets>) => {
+    const requestBody ={};
+    return this.http.post(`${this.API_URL_ELEMENT_TRAMO}${id}`,requestBody).pipe( map((res: GeneralV1Request<ElementTramoRequets>) => {
       let response = null;
       if (res.status_code === 200) {
         const result = res.result;

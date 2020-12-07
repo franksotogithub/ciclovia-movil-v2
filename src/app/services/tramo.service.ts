@@ -90,7 +90,7 @@ export class TramoService {
 
   updateTramo(id: number ,tramo: TramoModel ){
     const requestBody =tramo;
-    return this.http.put( `${this.API_URL_TRAMO}${id}`,requestBody).pipe( map((res: GeneralV1Request<TramoModel>) => {
+    return this.http.post( `${this.API_URL_TRAMO}${id}`,requestBody).pipe( map((res: GeneralV1Request<TramoModel>) => {
       let response = null;
       if (res.status_code === 200) {
         const result = res.result;
@@ -114,6 +114,8 @@ export class TramoService {
     }),
     );
   }
+
+  /*
 
   deleteTramo(id: number){
     return this.http.delete( `${this.API_URL_TRAMO}${id}`).pipe( map((res: GeneralV1Request<TramoModel>) => {
@@ -139,7 +141,7 @@ export class TramoService {
       return of(null);
     }),
     );
-  }
+  }*/
 
   
 }
