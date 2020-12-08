@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {Map,tileLayer,marker} from 'leaflet';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
@@ -14,6 +14,7 @@ import { CicloViaRequets } from '../model/ciclo_via/ciclo_via.requets';
 import { GeomModel } from '../model/geom/geom.model';
 import { TramoService } from '../services/tramo.service';
 import { TramoModel } from '../model/tramo/tramo.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-leaflet-map',
@@ -21,6 +22,8 @@ import { TramoModel } from '../model/tramo/tramo.model';
   styleUrls: ['./leaflet-map.page.scss'],
 })
 export class LeafletMapPage implements OnInit {
+  
+  @ViewChild("popup", { static: true }) private popupEl: ElementRef;
   map:Map;
   newMarker:any;
   address:string[];
@@ -30,6 +33,10 @@ export class LeafletMapPage implements OnInit {
   currentLocationMarker:any;
   elementTramoMarkerList:any[]=[];
   myInterval:any;
+  eventHandlerAssigned=false;
+  
+  idElement:any;
+  elementTramo : ElementTramoModel;
   constructor(    
     private geolocation: Geolocation,
     private elementTramoService: ElementTramoService,
@@ -38,6 +45,7 @@ export class LeafletMapPage implements OnInit {
     /*private viaService : ViaService,*/
     private distritoService: DistritoService,
     private tramoService : TramoService,
+    private router: Router,
 
     ) { }
 
@@ -157,20 +165,58 @@ export class LeafletMapPage implements OnInit {
         if(p.latitud && p.longitud){          
           console.log('p.latitud , p.longitud>>',p.latitud , p.longitud);
           const marker=this.addMarker(p.latitud,p.longitud);
-          marker.bindPopup(`Tramo: ${p.tramo.nombre}<br>Elemento: ${p.elemento} <br> <a href="/element-tramo-update/${p.id}">Ver`  
-          )
+
+          /*let html=document.getElementById("popup").innerHTML;*/
+          /*marker.bindPopup(`Tramo: ${p.tramo.nombre}<br>Elemento: ${p.elemento} <br> <ion-button [routerLink]="['/element-tramo-update']" >Ver</ion-button>`  */
+          /*marker.bindPopup(`Tramo: ${p.tramo.nombre}<br>Elemento: ${p.elemento} <br> <ion-button class="norwayLink">Ver</ion-button>`*/
+          /*marker.bindPopup(html);*/
+          
+
+          marker.on('click', (e)=> {
+            
+            this.elementTramo=p;
+          
+
+          });
+          
           this.elementTramoMarkerList.push(marker);
         }
 
-  
         });
+
+        /*
+        function flyToNorway(){
+          this.navCtrl.navigateForward("/element-tramo-update");
+        }
+
+        this.map.on('popupopen', function(){
+
+          if (  document.querySelector('.norwayLink')){
+            const link = document.querySelector('.norwayLink')
+            link.addEventListener('click',flyToNorway);
+           
+          }
+        
+        });
+  
+  
+        this.map.on('popupclose', function(){
+          document.querySelector('.norwayLink').removeEventListener('click', flyToNorway)
+           eventHandlerAssigned = false
+        })*/
+
         
       });
 
 
+
+
+
+
+
     }
 
-  
+    
 
     addVias(){
 
@@ -232,5 +278,9 @@ logout(){
   this.authService.logout();
 }
 
-  
+
+goUpdate(){
+  this.router.navigate(['/element-tramo-update',this.elementTramo.id]);  
+  /*this.navCtrl.navigateForward(`/element-tramo-update/${this.elementTramo.id}`);*/
+}
 }

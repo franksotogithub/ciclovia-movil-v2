@@ -54,3 +54,14 @@
     padding: 10px;
     z-index: 400;
   }
+
+
+  #popup{
+    width: 100%;
+    background-color: white;
+    position: absolute;
+    bottom: 0px;
+    padding: 10px;
+    z-index: 400;
+    visibility: visible;
+  }

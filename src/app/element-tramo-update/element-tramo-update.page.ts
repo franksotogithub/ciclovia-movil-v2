@@ -123,13 +123,38 @@ export class ElementTramoUpdatePage implements OnInit {
 
   ngOnInit() {
 
-    this.elemento = new ElementTramoModel();   
-    /*this.setLocation();*/
-    this.getUsuario();
-    this.getElemetTramo();
+    /*this.elemento = new ElementTramoModel();   */
+
+    const API_URL_PHOTO= environment.api_photo;
+  
+    this.route.params.subscribe(params => {
+      let id = parseInt(params.id); 
+      this.elementTramoService.getElementTramo(id).subscribe((res)=>{
+        if(res){
+          this.elemento = new  ElementTramoModel(res);
+          this.image = (this.elemento.img)?`${API_URL_PHOTO}${this.elemento.img}`:null; 
+
+
+          let tipos=this.elementos.find(e=>e.value==this.elemento.elemento).tipos;
+          let estados = this.elementos.find(e=>e.value==this.elemento.elemento).estados;
+
+          this.tipos = tipos?tipos:[];
+          this.estados = estados?estados:[];
+        
+        }  
+        
+      });
+      
+    });
+ 
 
   }
 
+  
+  ionViewDidEnter(){
+    
+
+  }
 
 
   initVia(){  
