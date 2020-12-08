@@ -264,17 +264,7 @@ export class ElementTramoPage implements OnInit {
 
   takePicture(){
 
-    /*
-    const options: CameraOptions = {
-      quality: 100,
-      destinationType: this.camera.DestinationType.DATA_URL,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE,
-      sourceType:this.camera.PictureSourceType.CAMERA,
-      targetWidth:720,
-      correctOrientation: true,
-    }
-    */
+ /*
 
    const options: CameraOptions = {
     quality: 100,
@@ -287,50 +277,25 @@ export class ElementTramoPage implements OnInit {
   }
     
 
-  /*
-    this.camera.getPicture(options).then((imageData) => {
-     
-      this.image = 'data:image/jpeg;base64,' + imageData;
-     
-
-    }, (err) => {
-      console.log('err>>',err);
-     
-    });
-    */
+ 
 
    this.camera.getPicture(options).then((imageData) => {
     this.image = this.webView.convertFileSrc(imageData);
     this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
       entry.file(file => {
         console.log(file);
-        /*this.readFile(file);*/
+       
         this.fileTemp = file;
       });
     });
   }, (err) => {
-    // Handle error
+   
   });
 
+*/
 
 
-     /*
-    this.image = 'data:image/jpeg;base64,' + imageData;*/
-
-/*
-    var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-    var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
-    this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-
-
-
-
-
-
-    this.image = this.webView.convertFileSrc(imagePath);*/
-
-
-
+this.navCtrl.navigateForward('/camera'); 
 
 
   }

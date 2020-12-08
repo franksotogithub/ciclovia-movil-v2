@@ -21,22 +21,16 @@ export class CameraPage implements OnInit {
     const win = !!event ? (event.target as Window) : window;
     this.width = win.innerWidth;
     this.height = win.innerHeight;
+    /*
+    this.videoOptions: MediaTrackConstraints = {
  
-    /*this.videoOptions.width={ideal: 300};
-    this.videoOptions.height={ideal: 600};*/
-    /*this.videoOptions.width={ideal: this.width};*/
- 
-     /*width : {ideal: 300},
-     height : {ideal: 400}
-    */
- 
-    /*if( this.width> this.height){
-     this.videoOptions.width={ideal: 600};
-     this.videoOptions.height={ideal: 400};
-    }*/
-    console.log('---------------------');
-    console.log('width:>>',this.width);
-    console.log('height:>>',this.height);
+      width : {ideal: 300},
+       height : {ideal: 600},
+     
+     
+      };
+      */
+    
  
  
   }
@@ -51,8 +45,6 @@ export class CameraPage implements OnInit {
    height : {ideal: 600},
  
  
- 
-  
   };
 
   public errors: WebcamInitError[] = [];
@@ -71,7 +63,11 @@ export class CameraPage implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    WebcamUtil.getAvailableVideoInputs()
+    this.onResize();
+  }
+
+  ionViewDidEnter(){
+        WebcamUtil.getAvailableVideoInputs()
     .then((mediaDevices: MediaDeviceInfo[]) => {
       this.multipleWebcamsAvailable = mediaDevices && mediaDevices.length > 1;
     });

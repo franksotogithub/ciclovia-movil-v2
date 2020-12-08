@@ -2,7 +2,7 @@
 <div style="text-align:center">
 
   
-  <div class="wrapper" (window:resize)="onResize($event)">
+  <div class="wrapper" >
 
     <ng-container *ngIf="camera;else html">
 
@@ -48,7 +48,7 @@
     </ng-container>
 
     <ng-template #html>
-        <div class="wrapper" (window:resize)="onResize($event)">
+        <div class="wrapper" >
           <img [src]="imageAsDataUrl"/>
         </div>
         <div class ='tools row'>
