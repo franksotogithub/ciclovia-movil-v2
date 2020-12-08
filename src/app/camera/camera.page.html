@@ -1,0 +1,82 @@
+
+<div style="text-align:center">
+
+  
+  <div class="wrapper" (window:resize)="onResize($event)">
+
+    <ng-container *ngIf="camera;else html">
+
+                <webcam  [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
+                
+                
+                
+                
+                [videoOptions]="videoOptions"
+                [imageQuality]="1"
+                [width]="width"
+                [height]="height"
+                
+                (initError)="handleInitError($event)"
+        ></webcam>
+
+      
+
+        <div class ='tools row'>
+          <div class="col-4">
+            
+<!--            <button  mat-mini-fab (click)="showNextWebcam(false);" title="Switch Camera"><mat-icon>sync</mat-icon>  </button>-->
+            
+          </div>
+          
+          <div  class="col-4">
+            <span class="dot" (click)="triggerSnapshot();"></span>
+          </div>
+
+          
+          <div class="col-4 snapshot" (click)="openPhoto()" > 
+            <ng-container *ngIf="imageAsDataUrl;else html1">
+              <img [src]="imageAsDataUrl"/>
+            </ng-container>
+            <ng-template #html1>
+              <!--<img src='assets/img/img-default.jpg'/>-->
+            </ng-template>  
+          </div>
+
+          
+        </div>
+
+    </ng-container>
+
+    <ng-template #html>
+        <div class="wrapper" (window:resize)="onResize($event)">
+          <img [src]="imageAsDataUrl"/>
+        </div>
+        <div class ='tools row'>
+          <div   class="col-4" >
+            <!--<button mat-mini-fab (click)="close()" ><mat-icon>close</mat-icon></button>-->
+            
+          </div>
+
+          <div   class="col-4" >
+            <!--<button mat-mini-fab (click)="guardar()" ><mat-icon aria-hidden="false" aria-label="Example home icon">save</mat-icon></button>-->
+            
+          </div>
+
+
+
+          
+
+          <div class="col-4"  >
+            <!--<button mat-raised-button (click)="back()" ><mat-icon >videocam</mat-icon></button>-->
+            
+          </div>
+   
+
+          
+        </div>
+
+
+    </ng-template>
+
+</div>
+

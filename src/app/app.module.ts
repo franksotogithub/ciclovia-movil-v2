@@ -21,9 +21,9 @@ import {AuthInterceptor} from './core/interceptor/auth.interceptor';
 import { IonicSelectableModule } from 'ionic-selectable';
 import {Camera} from '@ionic-native/camera/ngx';
 import {WebView} from '@ionic-native/ionic-webview/ngx'
+import {WebcamModule} from 'ngx-webcam';
 /*
-import {AngularFireStorageModule} from '@angular/fire/storage';
-import {AngularFireModule} from '@angular/fire';
+
 import {environment} from './../environments/environment';*/
 /*import { FirebaseX } from "@ionic-native/firebase-x/ngx";*/
 import { File } from '@ionic-native/File/ngx';
@@ -44,6 +44,7 @@ import { FilePath } from '@ionic-native/file-path/ngx';
     ReactiveFormsModule, 
     RxReactiveFormsModule,
     IonicSelectableModule,    
+    WebcamModule,
     /*
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireStorageModule,*/

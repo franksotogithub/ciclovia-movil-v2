@@ -1,0 +1,80 @@
+webcam{
+    z-index: 1;
+    position: absolute;
+  }
+  .tools{
+    z-index: 10;
+    position: absolute;
+    bottom: 10%;
+    /*display: flex;*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /*flex-direction:row;*/
+    
+    /*align-items: center;
+    justify-content: center;*/
+    width: 300px;
+  }
+  
+  .actionBtn {
+     
+      margin-bottom: 2px;
+      font-size: 1.2em;
+      
+   
+     
+    }
+  
+    .dot {
+      border: 5px solid lightgrey;
+      height: 50px;
+      width: 50px;
+      background-color: white;
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    
+   
+  
+    .snapshot {
+      /*z-index: 10;
+      position: absolute;
+      bottom: 100px;*/
+  
+      img {
+        border: 2px solid white;
+        /*background-color: white;*/
+       
+        border-radius: 2px;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        border-radius: 50%;
+      }
+      
+    }
+    
+    ul.links {
+      padding-bottom: 20px;
+    }
+  
+  
+  
+    .mat-dialog-container {
+      max-width: 100vw !important;
+      padding: 5px!important;
+    }
+  
+    .wrapper {
+      display: flex;
+      background: #383838;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+      // inexplicable/unknown extra space is rendered, causing scrollbars to show up 
+      overflow: hidden;
+      position: relative;
+    }

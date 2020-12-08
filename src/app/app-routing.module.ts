@@ -49,6 +49,10 @@ const routes: Routes = [
     path: 'element-tramo-update',
     loadChildren: () => import('./element-tramo-update/element-tramo-update.module').then( m => m.ElementTramoUpdatePageModule)
   },
+  {
+    path: 'camera',
+    loadChildren: () => import('./camera/camera.module').then( m => m.CameraPageModule)
+  },
 
 ];
 

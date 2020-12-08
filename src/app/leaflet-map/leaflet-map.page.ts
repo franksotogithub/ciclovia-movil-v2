@@ -95,7 +95,7 @@ export class LeafletMapPage implements OnInit {
   getCurrentPoint(init:boolean){  
 
     let options = {timeout: 10000, enableHighAccuracy: true, maximumAge: 3600};
-  
+    
   
     this.geolocation.getCurrentPosition(options).then((data) => {
       console.log('data>>>',data);
@@ -116,7 +116,28 @@ export class LeafletMapPage implements OnInit {
       }).catch((error) => {
       console.log(JSON.stringify(error));
       });
-        
+/*
+      console.log('>>>getCurrentPoint');
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((data) => {
+          if(data){
+            
+            this.dataLocation=data;     
+    
+    
+            (init)? this.currentLocation(this.initZoom):false;
+           
+            (this.currentLocationMarker)?this.removeMarker(this.currentLocationMarker):true;
+         
+            this.currentLocationMarker = this.addMarkerCurrentLocation(data.coords.latitude,data.coords.longitude);
+    
+    
+           }
+        });
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+        */
     }
 
     
