@@ -77,7 +77,7 @@ export class AuthService {
       this.storage.remove("currentUser");
       this.storage.set('isAuth',false);
       this.storage.remove('token');
-      this.navCtrl.navigateForward('/login');
+      this.navCtrl.navigateRoot('/login');
     }
 
     registerUser(body){

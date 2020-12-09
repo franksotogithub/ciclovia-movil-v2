@@ -46,7 +46,7 @@ export class LoginPage implements OnInit {
       this.error_login = false;
       if(res){
 
-        this.navCtrl.navigateForward("/");
+        this.navCtrl.navigateRoot("/");
       }
       else{
         
