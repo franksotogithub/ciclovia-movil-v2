@@ -81,10 +81,7 @@ export class CameraPage implements OnInit {
 
     });
     this.nextWebcam.subscribe((e)=>{
-      const win = !!event ? (event.target as Window) : window;
-      this.width = win.innerWidth;
-      this.height = win.innerHeight;
-      
+     
       this.videoOptions = {
  
         width : {ideal: 300},
