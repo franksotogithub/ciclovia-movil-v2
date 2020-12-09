@@ -255,7 +255,7 @@ export class LeafletMapPage implements OnInit {
             {
                 fillColor: '#1c9099',
               color:'red',
-                weight: 5
+                weight: 10
             };
 
 

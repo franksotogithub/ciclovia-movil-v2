@@ -5,6 +5,8 @@ import { UsuarioModel } from '../model/usuario/usuario.model';
 import { FormGroup } from '@angular/forms';
 import { RxFormBuilder } from '@rxweb/reactive-form-validators';
 import {Storage} from '@ionic/storage';
+import {LoadingController}  from  '@ionic/angular'; 
+import { ToastController } from '@ionic/angular';
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -15,9 +17,14 @@ export class RegisterPage implements OnInit {
   error_message:string;
   usuario: UsuarioModel;
   public usuarioFormGroup: FormGroup;
+  loading:any;
+  TIME_IN_MS:2000;
   constructor(    private authService:AuthService,
     private navCtrl : NavController,
-    private formBuilder: RxFormBuilder,) {
+    private formBuilder: RxFormBuilder,
+    public loadingCtrl: LoadingController,
+    public toastController: ToastController,
+    ) {
 
 
 
@@ -39,26 +46,47 @@ export class RegisterPage implements OnInit {
     }); 
    }
 
+   
+   async presentToast(message) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000
+    });
+    toast.present();
+    
+  }
 
-  registerUser(event){
+
+  async registerUser(event){
     event.preventDefault();
     this.error_message="";
     console.log('this.usuario>>>',this.usuario);
-    this.authService.registerUser(this.usuario).toPromise().then(res=>{
-      this.error_usuario = false;
-      if(res){
+    this.loading =this.loadingCtrl.create({
+      message:'Por favor espere..'
+    });
 
-        this.navCtrl.navigateForward('/login');
+    (await this.loading).present();
+
+
+    this.authService.registerUser(this.usuario).toPromise().then( async(res)=>{
+      this.error_usuario = false;
+      (await this.loading).dismiss();
+      if(res){
+        this.presentToast('Registro exitoso');       
+    
+     
+      setTimeout( () => {
+        this.navCtrl.navigateForward('/login'); 
+      }, this.TIME_IN_MS);
+
+
       }
-      /*else{
-        
-        this.error_usuario = true;
-        this.error_message=" El usuario o el password no son correctos";
-      }*/
+     
+    },async(error)=>{
       
-    },error=>{
       console.log('error>>>',error);
       this.error_message='';
+      (await this.loading).dismiss();
       if(error.status==400){
         this.error_usuario = true;
         this.error_message=error.error.message||'';
