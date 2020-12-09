@@ -35,7 +35,6 @@
     "cordova-android": "9.0.0",
     "cordova-browser": "6.0.0",
     "esri-loader": "^2.16.0",
-    "firebase": "^8.1.2",
     "ionic-selectable": "^4.7.1",
     "leaflet": "^1.7.1",
     "ngx-webcam": "^0.3.2",

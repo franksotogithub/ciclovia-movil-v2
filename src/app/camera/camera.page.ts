@@ -21,7 +21,7 @@ export class CameraPage implements OnInit {
     const win = !!event ? (event.target as Window) : window;
     this.width = win.innerWidth;
     this.height = win.innerHeight;
-    /*
+    
     this.videoOptions: MediaTrackConstraints = {
  
       width : {ideal: 300},
@@ -29,7 +29,7 @@ export class CameraPage implements OnInit {
      
      
       };
-      */
+      
     
  
  
@@ -70,7 +70,29 @@ export class CameraPage implements OnInit {
         WebcamUtil.getAvailableVideoInputs()
     .then((mediaDevices: MediaDeviceInfo[]) => {
       this.multipleWebcamsAvailable = mediaDevices && mediaDevices.length > 1;
+      
+      /*
+      const activeDeviceId: string = WebcamComponent.getDeviceIdFromMediaStreamTrack(stream.getVideoTracks()[0]);
+      this.activeVideoInputIndex = activeDeviceId ? this.availableVideoInputs
+        .findIndex((mediaDeviceInfo: MediaDeviceInfo) => mediaDeviceInfo.deviceId === activeDeviceId) : -1;
+      this.videoInitialized = true;
+
+      this.cameraSwitched.next(activeDeviceId);*/
+
     });
+    this.nextWebcam.subscribe((e)=>{
+      const win = !!event ? (event.target as Window) : window;
+      this.width = win.innerWidth;
+      this.height = win.innerHeight;
+      
+      this.videoOptions = {
+   
+        width : {ideal: 300},
+         height : {ideal: 600},
+       
+       
+        };
+    })
   }
 
   public triggerSnapshot(): void {
