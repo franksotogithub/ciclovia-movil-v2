@@ -80,7 +80,7 @@ export class LeafletMapPage implements OnInit {
         attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors,<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'})
       .addTo(this.map); // This line is added to add the Tile Layer to our map
   */
- tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+ tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
  { 
    maxZoom: 21,
    maxNativeZoom: 20,

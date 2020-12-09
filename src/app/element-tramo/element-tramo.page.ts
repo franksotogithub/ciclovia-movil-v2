@@ -264,7 +264,7 @@ export class ElementTramoPage implements OnInit {
 
   takePicture(){
 
- /*
+ 
 
    const options: CameraOptions = {
     quality: 100,
@@ -292,10 +292,10 @@ export class ElementTramoPage implements OnInit {
    
   });
 
-*/
 
+/*
 
-this.navCtrl.navigateForward('/camera'); 
+this.navCtrl.navigateForward('/camera'); */
 
 
   }
