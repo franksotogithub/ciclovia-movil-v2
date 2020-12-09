@@ -247,15 +247,11 @@ export class ElementTramoUpdatePage implements OnInit {
   }
 
 
-
   updateElement(){   
-      this.elementTramoService.updateElementTramo(this.elemento.id,this.elemento).subscribe(async (e)=>{
-        (await this.loading).dismiss();
-      
-        this.navCtrl.navigateRoot("/leaflet-map"); 
-      });      
-  }
-
+    this.elementTramoService.updateElementTramo(this.elemento.id,this.elemento).subscribe(e=>{
+      this.navCtrl.navigateForward("/leaflet-map"); 
+    });      
+}
 
 
   changeTramo(e){
