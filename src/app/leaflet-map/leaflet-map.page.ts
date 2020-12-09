@@ -15,6 +15,7 @@ import { GeomModel } from '../model/geom/geom.model';
 import { TramoService } from '../services/tramo.service';
 import { TramoModel } from '../model/tramo/tramo.model';
 import { Router } from '@angular/router';
+import { reduce } from 'rxjs/operators';
 
 @Component({
   selector: 'app-leaflet-map',
@@ -67,9 +68,7 @@ export class LeafletMapPage implements OnInit {
   
  
  loadMap(){
-    
-
-
+   
   this.map = new Map("mapa").setView([17.3850,78.4867], 13);
 
   /*
@@ -89,8 +88,20 @@ export class LeafletMapPage implements OnInit {
   })
  .addTo(this.map); // This line is added to add the Tile Layer to our map
       this.getCurrentPoint(true);
+  
+  
+  
+  
   }
     
+/*
+  onEachFeature(feature:any,layer:any){
+
+    layer.bindTooltip(feature.properties.NOMBDEP,{permanent:true,direction:"center",opacity:0.5 });
+    //layer.bindTooltip(feature.properties.NOMBDEP,{permanent:true,direction:"center",className: 'myCSSClass' });
+  }*/
+
+
 
   getCurrentPoint(init:boolean){  
 
@@ -116,29 +127,9 @@ export class LeafletMapPage implements OnInit {
       }).catch((error) => {
       console.log(JSON.stringify(error));
       });
-/*
-      console.log('>>>getCurrentPoint');
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((data) => {
-          if(data){
-            
-            this.dataLocation=data;     
-    
-    
-            (init)? this.currentLocation(this.initZoom):false;
-           
-            (this.currentLocationMarker)?this.removeMarker(this.currentLocationMarker):true;
-         
-            this.currentLocationMarker = this.addMarkerCurrentLocation(data.coords.latitude,data.coords.longitude);
-    
-    
-           }
-        });
-      } else {
-        alert("Geolocation is not supported by this browser.");
-      }
-        */
+
     }
+
 
     
   currentLocation(zoom?:number){  
@@ -192,7 +183,7 @@ export class LeafletMapPage implements OnInit {
           /*marker.bindPopup(`Tramo: ${p.tramo.nombre}<br>Elemento: ${p.elemento} <br> <ion-button class="norwayLink">Ver</ion-button>`*/
           /*marker.bindPopup(html);*/
           
-
+          
           marker.on('click', (e)=> {
             
             this.elementTramo=p;
@@ -258,9 +249,32 @@ export class LeafletMapPage implements OnInit {
             });
   
             console.log(coords);
-           var polygon = L.polyline(
+
+            
+            var myStyle =
+            {
+                fillColor: '#1c9099',
+              color:'red',
+                weight: 5
+            };
+
+
+           var polyline = L.polyline(
             coords
           ).addTo(this.map);
+          polyline.setStyle(myStyle);
+          polyline.bindPopup(`Tramo: ${v.nombre}`);
+
+          /*
+          
+        
+var polygon = L.polygon(
+    [[51.509, -0.08],
+    [51.503, -0.06],
+    [51.51, -0.047]]);
+polygon.setStyle(myStyle)
+          
+          */
   
           }
       
