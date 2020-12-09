@@ -22,7 +22,7 @@ export class CameraPage implements OnInit {
     this.width = win.innerWidth;
     this.height = win.innerHeight;
     
-    this.videoOptions: MediaTrackConstraints = {
+    this.videoOptions = {
  
       width : {ideal: 300},
        height : {ideal: 600},
@@ -86,12 +86,12 @@ export class CameraPage implements OnInit {
       this.height = win.innerHeight;
       
       this.videoOptions = {
-   
+ 
         width : {ideal: 300},
          height : {ideal: 600},
        
        
-        };
+        };        
     })
   }
 
