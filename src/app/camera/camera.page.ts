@@ -1,7 +1,8 @@
 import { Component,HostListener, OnInit } from '@angular/core';
 import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
-
+import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
+import { NavController } from '@ionic/angular';
 @Component({
   selector: 'app-camera',
   templateUrl: './camera.page.html',
@@ -17,6 +18,7 @@ export class CameraPage implements OnInit {
   id: number;
   
   @HostListener('window:resize', ['$event'])
+  urlPreview:string;
   onResize(event?: Event) {
     const win = !!event ? (event.target as Window) : window;
     this.width = win.innerWidth;
@@ -60,10 +62,21 @@ export class CameraPage implements OnInit {
   private nextWebcam: Subject<boolean|string> = new Subject<boolean|string>();
  
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private navController:NavController
+    /*private urlService: UrlService*/
+    ) { 
+
+
+  }
 
   ngOnInit() {
+    
+    this.urlPreview = localStorage.getItem('urlPreview')?localStorage.getItem('urlPreview'):null;
+
     this.onResize();
+
   }
 
   ionViewDidEnter(){
@@ -141,11 +154,18 @@ openPhoto(){
  }
 
  guardar(){
-    
+    localStorage.setItem('image',this.imageAsDataUrl);
+    /*this.router.navigate([this.urlPreview]); */
+    this.navController.navigateForward(this.urlPreview);
   /*this.movMercadoCasasModel.imgUrl =this.imageAsDataUrl; 
   
   this.idbService.updateItem(TablesDB.MOV_MERC_CASAS, this.movMercadoCasasModel,this.id);
    this.router.navigate([this.previusUrl]);
 */
 }
+
+
+ back(){
+  this.camera=true;
+ }
 }

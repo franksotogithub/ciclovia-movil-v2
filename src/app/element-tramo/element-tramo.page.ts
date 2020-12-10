@@ -22,7 +22,8 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs';
 import {LoadingController}  from  '@ionic/angular'; 
-
+import {UtilHelper} from '../util/util.helper';
+ 
 const STORAGE_KEY = 'my_images';
 
 @Component({
@@ -99,7 +100,7 @@ export class ElementTramoPage implements OnInit {
 
   uploadProgress:number;
   /*file:File;*/
-  fileTemp:any;
+  fileTemp:Blob;
 
   loading:any;
 
@@ -136,9 +137,45 @@ export class ElementTramoPage implements OnInit {
 
   }
 
+  
+  ionViewDidEnter(){
+    const imageTemp = localStorage.getItem('image')?localStorage.getItem('image'):null;
+    console.log('imageTemp>>>',imageTemp);
+    if(imageTemp){
+      /*const blob = new Blob([imageTemp], {type: 'image/png'});
+      const file = new File([blob], "filename");
+*/
+/*
+this.image =imageTemp;
 
+this.file.resolve
+*/
+/*
+this.file.resolveLocalFilesystemUrl(this.image)
+.then(entry => {
+    this.fileTemp = entry;
+})
+.catch(err => {
+  console.log(err);
+  
+});
+    }*/
+/*
+    this.fileTemp = UtilHelper.gb64toBlob( imageTemp, 'image/jpeg');
+    */
+   this.image =imageTemp;
 
+  fetch(imageTemp).then(value=>{
+     value.blob().then(v=>{
+      this.fileTemp =  v
+      console.log('fileTemp>>',this.fileTemp);
+     }
 
+    );
+   });
+    
+  }
+  }
 
   getUsuario(){
     let user: UsuarioModel=JSON.parse( localStorage.getItem("currentUser"));
@@ -198,7 +235,7 @@ export class ElementTramoPage implements OnInit {
   
 
     if(this.fileTemp){      
-      let name=this.readFile(this.fileTemp);
+      let name=this.readFileAndSave();
 
     }
     else{
@@ -260,7 +297,7 @@ export class ElementTramoPage implements OnInit {
 
   takePicture(){
 
- 
+ /*
 
    const options: CameraOptions = {
     quality: 100,
@@ -287,25 +324,20 @@ export class ElementTramoPage implements OnInit {
   }, (err) => {
    
   });
+*/
 
-
-/*
-
-this.navCtrl.navigateForward('/camera'); */
+localStorage.setItem('urlPreview','/element-tramo');
+this.navCtrl.navigateForward('/camera'); 
 
 
   }
 
 
 
-
+/*
    readFile(file: any) {
 
     let filename:any;
-
-    /*if(!file){
-      cb();
-    */
 
     
       const reader = new FileReader();
@@ -315,7 +347,7 @@ this.navCtrl.navigateForward('/camera'); */
           type: file.type
         });
         const formData = new FormData();
-        /*formData.append('name', 'Hello');*/
+     
         formData.append('file', imgBlob, file.name);
         this.fileService.uploadFile(formData).toPromise().then(e=>{
             console.log('e>>',e['file']['filename']);
@@ -329,8 +361,23 @@ this.navCtrl.navigateForward('/camera'); */
       reader.readAsArrayBuffer(file);
       return filename;
 
-  }
+  }*/
 
+
+  readFileAndSave(){
+
+
+    const formData = new FormData();
+     
+    formData.append('file', this.fileTemp);
+    this.fileService.uploadFile(formData).toPromise().then(e=>{
+        console.log('e>>',e['file']['filename']);
+        
+        this.elemento.img=e['file']['filename'];
+        this.createElement();
+    });
+
+  }
 
 
   
