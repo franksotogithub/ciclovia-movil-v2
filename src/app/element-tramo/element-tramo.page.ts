@@ -86,6 +86,11 @@ export class ElementTramoPage implements OnInit {
 
     estados:null,
   },
+
+  {value:'Otro',text:'Otro',
+  tipos:null,
+  estados:null,
+},
     
   ]
 
@@ -130,9 +135,9 @@ export class ElementTramoPage implements OnInit {
   }
 
   initVia(){
-  
+    this.elemento.elemento ='Otros';
     this.tramos=JSON.parse( localStorage.getItem("tramos"));
-
+   
 
   }
 
@@ -153,6 +158,7 @@ export class ElementTramoPage implements OnInit {
 
       this.elemento.latitud=resp.coords.latitude;
       this.elemento.longitud= resp.coords.longitude;
+      
 
       }).catch((error) => {
         
@@ -172,7 +178,9 @@ export class ElementTramoPage implements OnInit {
       this.estados = estados?estados:[];
       this.elemento.tipo=null;
       this.elemento.estado=null;
-      this.elemento.valor =null;
+      this.elemento.data =null;
+      this.elemento.observacion=null
+     
 
     }
   }

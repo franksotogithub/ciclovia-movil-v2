@@ -7,12 +7,12 @@ export interface ElementTramoRequets {
   elemento : string;
   tipo : string;
   estado : string;
-  valor:  number;
+  data:  number;
   latitud: number;
   longitud: number;
   img: string;
   usuario: string;
-  
+  observacion: string;
   tramo: TramoModel;
 }
   

@@ -11,7 +11,7 @@ export class ElementTramoModel implements  ElementTramoRequets {
   elemento : string;
   tipo : string;
   estado : string;
-  valor:  number;
+  data:  number;
   latitud: number;
   longitud: number;
   img: string;
@@ -19,21 +19,21 @@ export class ElementTramoModel implements  ElementTramoRequets {
 
   distrito:string;
   tramo : TramoModel;
+  observacion: string;
   constructor(t?: ElementTramoRequets){
     this.id = t?.id;
     this.id_tramo = t?.id_tramo;
     this.elemento = t?.elemento;
     this.tipo= t?.tipo;
     this.estado = t?.estado;
-    this.valor = t?.valor;
+    this.data = t?.data;
     this.latitud = t?.latitud;
     this.longitud = t?.longitud;
     this.img = t?.img;
     this.usuario = t?.usuario;
     this.tramo = t?.tramo;
-
+    this.observacion= t?.observacion;
   }
-
 
 }
   

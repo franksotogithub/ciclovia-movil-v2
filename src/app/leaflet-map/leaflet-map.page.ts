@@ -16,6 +16,8 @@ import { TramoService } from '../services/tramo.service';
 import { TramoModel } from '../model/tramo/tramo.model';
 import { Router } from '@angular/router';
 import { reduce } from 'rxjs/operators';
+import * as v from 'leaflet.vectorgrid';
+import * as esri from 'esri-leaflet';
 
 @Component({
   selector: 'app-leaflet-map',
@@ -71,14 +73,7 @@ export class LeafletMapPage implements OnInit {
    
   this.map = new Map("mapa").setView([17.3850,78.4867], 13);
 
-  /*
-  tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      { 
-        maxZoom: 22,
-        maxNativeZoom: 19,
-        attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors,<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'})
-      .addTo(this.map); // This line is added to add the Tile Layer to our map
-  */
+
  tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
  { 
    maxZoom: 21,
@@ -86,20 +81,20 @@ export class LeafletMapPage implements OnInit {
    subdomains:['mt0','mt1','mt2','mt3'],
    
   })
- .addTo(this.map); // This line is added to add the Tile Layer to our map
-      this.getCurrentPoint(true);
-  
-  
-  
-  
-  }
-    
-/*
-  onEachFeature(feature:any,layer:any){
+ .addTo(this.map); 
 
-    layer.bindTooltip(feature.properties.NOMBDEP,{permanent:true,direction:"center",opacity:0.5 });
-    //layer.bindTooltip(feature.properties.NOMBDEP,{permanent:true,direction:"center",className: 'myCSSClass' });
-  }*/
+
+this.getCurrentPoint(true);
+
+/*
+esri.dynamicMapLayer({
+  url:'https://siu.imp.gob.pe/arcgis/rest/services/DATA/Manzanas/MapServer',
+  opacity: 0.7
+}).addTo(this.map);
+*/
+
+}
+    
 
 
 
@@ -113,9 +108,7 @@ export class LeafletMapPage implements OnInit {
       
       if(data){
           
-        this.dataLocation=data;     
-
-
+        this.dataLocation=data;
         (init)? this.currentLocation(this.initZoom):false;
        
         (this.currentLocationMarker)?this.removeMarker(this.currentLocationMarker):true;

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ViaService } from './ciclo-via.service';
+import { ViaService } from './via.service';
 
 describe('ViaService', () => {
   let service: ViaService;

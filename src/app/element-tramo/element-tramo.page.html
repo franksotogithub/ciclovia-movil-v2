@@ -4,7 +4,7 @@
       <!--<ion-back-button (click)="regresar()"></ion-back-button>-->
       <ion-button (click)="regresar()" ><ion-icon name="arrow-back-outline" ></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>Elemento del Tramo</ion-title>
+    <ion-title>Agregar Observacion de la Ciclovia</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -12,14 +12,10 @@
   <ion-grid>
 
     <ion-row>
+    
       <ion-col size="12">
-        <div>
-          <ion-label>Tramo: </ion-label>
-        </div>      
-      </ion-col>
-
-      <ion-col size="10">
-        <div> 
+    
+          <ion-label position="floating">Ciclovia:</ion-label>
           <ion-item>           
             <ionic-selectable          
           [(ngModel)]="tramo" 
@@ -30,15 +26,15 @@
                 (onChange)="changeTramo($event)"
                 >
                 <ng-template ionicSelectableItemTemplate let-tramo="item"> 
-                  {{ tramo.nombre}} (distancia: {{tramo.distancia}} distrito: {{tramo.distrito}} )
+                  {{ tramo.nombre}} (distrito: {{tramo.distrito}} )
 
                   <!--<ng-container *ngIf="tramo.desde">  ( desde: {{tramo.desde}} hasta:  {{tramo.hasta}})</ng-container>-->
                 </ng-template>
           </ionic-selectable>
         </ion-item>
-        </div>
+      
       </ion-col>
-      <ion-col size="2">
+      <!--<ion-col size="2">
         <div> 
           <ion-button  
           shape="full"  
@@ -48,8 +44,8 @@
           > <ion-icon name="create-outline"></ion-icon> </ion-button>
         </div>
         
-      </ion-col>
-      
+      </ion-col>-->
+      <!--
       <ion-col size="12">
         <div> 
 
@@ -64,15 +60,14 @@
         </div>
 
       </ion-col>
-      
-
- 
+    -->
 
     </ion-row>
 
 <ion-row  *ngIf="elemento.elemento">
 
-  
+  <ng-container *ngIf="tipos;else otros">
+
     <ion-col size="12">
       <div>
         <ion-item>
@@ -106,8 +101,21 @@
      
     </ion-col>
 
+  </ng-container>
 
+  <ng-template #otros>
     <ion-col size="12">
+      <ion-item >
+        <ion-label position="floating">Escriba una observacion:</ion-label>
+        <ion-textarea  [(ngModel)]="elemento.observacion"  rows="5" ></ion-textarea>        
+      </ion-item>
+    </ion-col>
+
+  </ng-template>
+
+
+
+  <ion-col size="12">
       <ion-button 
       expand ="full" 
       shape="full"  
@@ -128,13 +136,7 @@
       > Guardar</ion-button>
 
     </ion-col>
-   <!--
-    <ion-col size="12">
 
-
-      <ion-progress-bar [value]="uploadProgress" color="tertiary"> </ion-progress-bar>
-
-    </ion-col>-->
   
 </ion-row>
     

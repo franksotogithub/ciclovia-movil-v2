@@ -24,6 +24,7 @@ import { Observable } from 'rxjs';
 import {LoadingController}  from  '@ionic/angular'; 
 
 import {environment} from 'src/environments/environment';
+import { async } from '@rxweb/reactive-form-validators';
 
 @Component({
   selector: 'app-element-tramo-update',
@@ -87,6 +88,11 @@ export class ElementTramoUpdatePage implements OnInit {
 
     estados:null,
   },
+
+  {value:'Otro',text:'Otro',
+  tipos:null,
+  estados:null,
+},
     
   ]
 
@@ -146,8 +152,6 @@ export class ElementTramoUpdatePage implements OnInit {
       });
       
     });
- 
-
   }
 
   
@@ -205,9 +209,8 @@ export class ElementTramoUpdatePage implements OnInit {
       this.tipos = tipos?tipos:[];
       this.estados = estados?estados:[];
       this.elemento.tipo=null;
-      this.elemento.estado=null;
-      this.elemento.valor =null;
-
+      this.elemento.data=null;
+      this.elemento.observacion =null;
     }
   }
 
@@ -248,8 +251,10 @@ export class ElementTramoUpdatePage implements OnInit {
 
 
   updateElement(){   
-    this.elementTramoService.updateElementTramo(this.elemento.id,this.elemento).subscribe(e=>{
+    this.elementTramoService.updateElementTramo(this.elemento.id,this.elemento).subscribe( async(e)=>{
+      (await this.loading).dismiss();
       this.navCtrl.navigateForward("/leaflet-map"); 
+
     });      
 }
 
