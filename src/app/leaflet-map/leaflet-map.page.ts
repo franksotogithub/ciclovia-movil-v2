@@ -121,7 +121,7 @@ esri.dynamicMapLayer({
       console.log(JSON.stringify(error));
       });
 
-    }
+  }
 
 
     
@@ -262,17 +262,6 @@ esri.dynamicMapLayer({
           ).addTo(this.map);
           polyline.setStyle(myStyle);
           polyline.bindPopup(`Tramo: ${v.nombre}`);
-
-          /*
-          
-        
-var polygon = L.polygon(
-    [[51.509, -0.08],
-    [51.503, -0.06],
-    [51.51, -0.047]]);
-polygon.setStyle(myStyle)
-          
-          */
   
           }
       
@@ -288,9 +277,6 @@ polygon.setStyle(myStyle)
 
 
   add(){
-
- 
-
     this.tramoService.getTramoCercano(this.dataLocation.coords.longitude, this.dataLocation.coords.latitude).toPromise()
     .then( (resp:TramoModel[])=>{
 
@@ -305,15 +291,15 @@ polygon.setStyle(myStyle)
   ionViewDidLeave() {  
     clearInterval(this.myInterval);
     
-}
+  }
 
-logout(){
-  this.authService.logout();
-}
+  logout(){
+    this.authService.logout();
+  }
 
 
-goUpdate(){
-  this.router.navigate(['/element-tramo-update',this.elementTramo.id]);  
-  /*this.navCtrl.navigateForward(`/element-tramo-update/${this.elementTramo.id}`);*/
-}
+  goUpdate(){
+    this.router.navigate(['/element-tramo-update',this.elementTramo.id]);  
+    /*this.navCtrl.navigateForward(`/element-tramo-update/${this.elementTramo.id}`);*/
+  }
 }
