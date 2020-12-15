@@ -126,7 +126,7 @@ export class ElementTramoPage implements OnInit {
   ) { }
 
   ngOnInit() {
-
+    
     this.elemento = new ElementTramoModel();   
     this.setLocation();
     this.getUsuario();
@@ -258,9 +258,6 @@ export class ElementTramoPage implements OnInit {
   }
 
   editarTramo(){
-    /*
-    localStorage.setItem("tramo",JSON.stringify(this.tramo));
-    this.navCtrl.navigateForward("/tramo"); */
     this.router.navigate(['/tramo',this.tramo.id]);  
     
   }
@@ -297,11 +294,6 @@ export class ElementTramoPage implements OnInit {
   });
 
 
-/*
-
-this.navCtrl.navigateForward('/camera'); */
-
-
   }
 
 
@@ -311,10 +303,6 @@ this.navCtrl.navigateForward('/camera'); */
 
     let filename:any;
 
-    /*if(!file){
-      cb();
-    */
-
     
       const reader = new FileReader();
       
@@ -323,7 +311,7 @@ this.navCtrl.navigateForward('/camera'); */
           type: file.type
         });
         const formData = new FormData();
-        /*formData.append('name', 'Hello');*/
+      
         formData.append('file', imgBlob, file.name);
         this.fileService.uploadFile(formData).toPromise().then(e=>{
             console.log('e>>',e['file']['filename']);
@@ -341,170 +329,6 @@ this.navCtrl.navigateForward('/camera'); */
 
 
 
-  
-  /*
-  uploadPicture(callback){
 
-
-    const randomID= Math.random().toString(36).substring(2,8);
-    const filePath=`files/${new Date().getTime()}_${randomID}`
-    const uploadTask = this.storage.upload(filePath,this.image);
-    const fileRef = this.storage.ref(filePath);
-
-    uploadTask.percentageChanges().subscribe(changes=>{
-
-      this.uploadProgress = changes;
-
-
-    });
-
-
-    uploadTask.snapshotChanges().pipe(
-      finalize(() => {
-        fileRef.getDownloadURL().subscribe((url)=>{ 
-        this.elemento.img= url;
-        callback();
-
-      });} 
-    )
-   )
-  .subscribe()
-
-  }*/
-
-
-
-
-  /*
-
-
-
-  
-  pathForImage(img) {
-    if (img === null) {
-      return '';
-    } else {
-      let converted = this.webView.convertFileSrc(img);
-      return converted;
-    }
-  }
- 
-
-
-  createFileName() {
-    var d = new Date(),
-        n = d.getTime(),
-        newFileName = n + ".jpg";
-    return newFileName;
-}
- 
-copyFileToLocalDir(namePath, currentName, newFileName) {
-    this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
-        this.updateStoredImages(newFileName);
-    }, error => {
-        this.presentToast('Error while storing file.');
-    });
-}
-
-updateStoredImages(name) {
-  this.storage.get(STORAGE_KEY).then(images => {
-      let arr = JSON.parse(images);
-      if (!arr) {
-          let newImages = [name];
-          this.storage.set(STORAGE_KEY, JSON.stringify(newImages));
-      } else {
-          arr.push(name);
-          this.storage.set(STORAGE_KEY, JSON.stringify(arr));
-      }
-
-      let filePath = this.file.dataDirectory + name;
-      let resPath = this.pathForImage(filePath);
-
-      let newEntry = {
-          name: name,
-          path: resPath,
-          filePath: filePath
-      };
-
-      this.images = [newEntry, ...this.images];
-      this.ref.detectChanges(); // trigger change detection cycle
-  });
-}
-
-
-
-
-deleteImage(imgEntry, position) {
-  this.images.splice(position, 1);
-
-  this.storage.get(STORAGE_KEY).then(images => {
-      let arr = JSON.parse(images);
-      let filtered = arr.filter(name => name != imgEntry.name);
-      this.storage.set(STORAGE_KEY, JSON.stringify(filtered));
-
-      var correctPath = imgEntry.filePath.substr(0, imgEntry.filePath.lastIndexOf('/') + 1);
-
-      this.file.removeFile(correctPath, imgEntry.name).then(res => {
-          this.presentToast('File removed.');
-      });
-  });
-}
-
-
-
-
-
-
-startUpload(imgEntry) {
-  this.file.resolveLocalFilesystemUrl(imgEntry.filePath)
-      .then(entry => {
-          ( < FileEntry > entry).file(file => this.readFile(file))
-      })
-      .catch(err => {
-          this.presentToast('Error while reading file.');
-      });
-}
-
-
-readFile(file: any) {
-  const reader = new FileReader();
-  reader.onload = () => {
-      const formData = new FormData();
-      const imgBlob = new Blob([reader.result], {
-          type: file.type
-      });
-      formData.append('file', imgBlob, file.name);
-      this.uploadImageData(formData);
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-
-
-
-
-async uploadImageData(formData: FormData) {
-  const loading = await this.loadingController.create({
-      message: 'Uploading image...',
-  });
-  await loading.present();
-
-  this.http.post("http://localhost:8888/upload.php", formData)
-      .pipe(
-          finalize(() => {
-             loading.dismiss();
-          })
-      )
-      .subscribe(res => {
-          
-        
-        if (res['success']) {
-              this.presentToast('File upload complete.')
-          } else {
-              this.presentToast('File upload failed.')
-          }
-      });
-}*/
- 
 
 }
