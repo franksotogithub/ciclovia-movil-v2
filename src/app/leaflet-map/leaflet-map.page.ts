@@ -135,7 +135,12 @@ esri.dynamicMapLayer({
 
 
     addMarker(latitude, longitude){
-     return L.marker([latitude, longitude]).addTo(this.map);
+      var marker_icon = L.icon({
+        iconUrl: 'assets/img/marker-icon.png',
+        iconSize:     [20,30],
+      
+      });
+     return L.marker([latitude, longitude], {icon: marker_icon}).addTo(this.map);
     }
 
     addMarkerCurrentLocation(latitude, longitude){
