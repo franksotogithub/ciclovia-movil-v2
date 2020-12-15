@@ -141,7 +141,12 @@ export class ElementTramoPage implements OnInit {
 
   }
 
-
+  ionViewDidEnter(){
+    const imageTemp = localStorage.getItem('image')?localStorage.getItem('image'):null;    
+    if(imageTemp){
+      this.image =imageTemp;
+    }
+  }
 
 
 
@@ -205,39 +210,22 @@ export class ElementTramoPage implements OnInit {
     (await this.loading).present();
   
 
-    if(this.fileTemp){      
-      let name=this.readFile(this.fileTemp);
+    if(this.image){      
+      let name=this.readFileAndSave();
 
     }
     else{
       this.createElement();
     }
-      /*
-    
-    if(this.elemento.id){
-      
-      let name=this.readFile(this.fileTemp);
-      console.log('name>>',name);
-
-    }
-
-    else{
-
-      let name=this.readFile(this.fileTemp);
-      console.log('name>>',name);
-
-      
-
-    }    */
+     
   }
-
-
 
  
 
    createElement(){
       
       this.elementTramoService.createElementTramo(this.elemento).subscribe(async (e)=>{
+        localStorage.removeItem('image');
         (await this.loading).dismiss();
         this.navCtrl.navigateForward("/leaflet-map"); 
       });
@@ -254,6 +242,7 @@ export class ElementTramoPage implements OnInit {
 
 
   regresar(){    
+    localStorage.removeItem('image');
     this.navCtrl.navigateForward("/leaflet-map");   
   }
 
@@ -262,69 +251,27 @@ export class ElementTramoPage implements OnInit {
     
   }
 
-
   takePicture(){
-
- 
-
-   const options: CameraOptions = {
-    quality: 100,
-    destinationType: this.camera.DestinationType.FILE_URI,
-    encodingType: this.camera.EncodingType.JPEG,
-    mediaType: this.camera.MediaType.PICTURE,
-    sourceType:this.camera.PictureSourceType.CAMERA,
-    targetWidth:720,
-    correctOrientation: true,
-  }
-    
-
- 
-
-   this.camera.getPicture(options).then((imageData) => {
-    this.image = this.webView.convertFileSrc(imageData);
-    this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
-      entry.file(file => {
-        console.log(file);
-       
-        this.fileTemp = file;
-      });
-    });
-  }, (err) => {
-   
-  });
-
-
+    localStorage.setItem('urlPreview','/element-tramo');
+    this.navCtrl.navigateForward('/camera'); 
   }
 
 
+  readFileAndSave(){
 
-
-   readFile(file: any) {
-
-    let filename:any;
-
+    const formData = new FormData();
     
-      const reader = new FileReader();
-      
-      filename=reader.onloadend = async () => {
-        const imgBlob = new Blob([reader.result], {
-          type: file.type
-        });
-        const formData = new FormData();
-      
-        formData.append('file', imgBlob, file.name);
+    fetch(this.image).then(value=>{
+      value.blob().then( (blob:Blob)=>{
+       formData.append('file', blob, 'ejemplo.jpg');
         this.fileService.uploadFile(formData).toPromise().then(e=>{
-            console.log('e>>',e['file']['filename']);
-            
-            this.elemento.img=e['file']['filename'];
-            this.createElement();
-        });
-        
-        
-      };
-      reader.readAsArrayBuffer(file);
-      return filename;
-
+          this.elemento.img=e['file']['filename'];
+          this.createElement();
+      });
+      }
+     );
+    });
+    
   }
 
 

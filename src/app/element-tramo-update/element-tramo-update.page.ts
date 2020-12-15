@@ -128,11 +128,8 @@ export class ElementTramoUpdatePage implements OnInit {
   ) { }
 
   ngOnInit() {
-
-    /*this.elemento = new ElementTramoModel();   */
-
-    const API_URL_PHOTO= environment.api_photo;
-  
+    localStorage.removeItem('image');
+    const API_URL_PHOTO= environment.api_photo;  
     this.route.params.subscribe(params => {
       let id = parseInt(params.id); 
       this.elementTramoService.getElementTramo(id).subscribe((res)=>{
@@ -147,8 +144,7 @@ export class ElementTramoUpdatePage implements OnInit {
           this.tipos = tipos?tipos:[];
           this.estados = estados?estados:[];
         
-        }  
-        
+        }          
       });
       
     });
@@ -156,7 +152,13 @@ export class ElementTramoUpdatePage implements OnInit {
 
   
   ionViewDidEnter(){
+    const imageTemp = localStorage.getItem('image')?localStorage.getItem('image'):null;
     
+    if(imageTemp){
+
+    this.image =imageTemp;
+
+    }
 
   }
 
@@ -228,8 +230,7 @@ export class ElementTramoUpdatePage implements OnInit {
   
 
 
-  async guardar(){
-    
+  async guardar(){    
     
     this.loading =this.loadingCtrl.create({
       message:'Por favor espere..'
@@ -238,8 +239,8 @@ export class ElementTramoUpdatePage implements OnInit {
     (await this.loading).present();
   
 
-    if(this.fileTemp){      
-      let name=this.readFile(this.fileTemp);
+    if(this.image){      
+      let name=this.readFileAndSave();
 
     }
     else{
@@ -248,7 +249,6 @@ export class ElementTramoUpdatePage implements OnInit {
   
   
   }
-
 
   updateElement(){   
     this.elementTramoService.updateElementTramo(this.elemento.id,this.elemento).subscribe( async(e)=>{
@@ -275,65 +275,28 @@ export class ElementTramoUpdatePage implements OnInit {
 
 
   takePicture(){
-
-   const options: CameraOptions = {
-    quality: 100,
-    destinationType: this.camera.DestinationType.FILE_URI,
-    encodingType: this.camera.EncodingType.JPEG,
-    mediaType: this.camera.MediaType.PICTURE,
-    sourceType:this.camera.PictureSourceType.CAMERA,
-    targetWidth:720,
-    correctOrientation: true,
-  }
-    
-
-
-   this.camera.getPicture(options).then((imageData) => {
-    this.image = this.webView.convertFileSrc(imageData);
-    this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
-      entry.file(file => {
-        console.log(file);
-        
-        this.fileTemp = file;
-      });
-    });
-  }, (err) => {
-    // Handle error
-  });
-
-
+    localStorage.setItem('urlPreview','/element-tramo');
+    this.navCtrl.navigateForward('/camera'); 
   }
 
 
 
 
-   readFile(file: any) {
+  readFileAndSave(){
 
-    let filename:any;
-
-
+    const formData = new FormData();
     
-      const reader = new FileReader();
-      
-      filename=reader.onloadend = async () => {
-        const imgBlob = new Blob([reader.result], {
-          type: file.type
-        });
-        const formData = new FormData();
-      
-        formData.append('file', imgBlob, file.name);
+    fetch(this.image).then(value=>{
+      value.blob().then( (blob:Blob)=>{
+       formData.append('file', blob, 'ejemplo.jpg');
         this.fileService.uploadFile(formData).toPromise().then(e=>{
-            
-            
-            this.elemento.img=e['file']['filename'];
-            this.updateElement();
-        });
-        
-        
-      };
-      reader.readAsArrayBuffer(file);
-      return filename;
-
+          this.elemento.img=e['file']['filename'];
+          this.updateElement();
+      });
+      }
+     );
+    });
+    
   }
 
   eliminar(){
