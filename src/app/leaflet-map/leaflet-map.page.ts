@@ -304,8 +304,9 @@ polygon.setStyle(myStyle)
 
   ionViewDidLeave() {  
     clearInterval(this.myInterval);
-    
-}
+    this.map.remove();
+    this.map = null;
+  }
 
 logout(){
   this.authService.logout();

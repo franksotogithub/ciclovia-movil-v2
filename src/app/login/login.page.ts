@@ -54,7 +54,8 @@ export class LoginPage implements OnInit {
         this.error_message=" El usuario o el password no son correctos";
       }
       
-    },error=>{
+    },async (error)=>{
+      (await this.loading).dismiss();
       this.error_message='';
       if(error.status==400){
         this.error_login = true;
