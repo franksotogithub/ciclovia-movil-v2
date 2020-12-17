@@ -31,7 +31,7 @@ export class UsuarioModel implements  UsuarioRequest {
   updatedAt:string;
 
   is_valid:boolean;
-
+  id_rol :number;
 
 
   constructor(p ?: UsuarioRequest){
@@ -43,6 +43,7 @@ export class UsuarioModel implements  UsuarioRequest {
     this.last_name = p?.last_name;
     this.createdAt = p?.createdAt;
     this.updatedAt = p?.updatedAt;   
+    this.id_rol =1;
   }
 
 

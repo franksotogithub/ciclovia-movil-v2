@@ -18,6 +18,8 @@ import { Router } from '@angular/router';
 import { reduce } from 'rxjs/operators';
 import * as v from 'leaflet.vectorgrid';
 import * as esri from 'esri-leaflet';
+import {environment} from 'src/environments/environment';
+import { UsuarioModel } from '../model/usuario/usuario.model';
 
 @Component({
   selector: 'app-leaflet-map',
@@ -37,9 +39,10 @@ export class LeafletMapPage implements OnInit {
   elementTramoMarkerList:any[]=[];
   myInterval:any;
   eventHandlerAssigned=false;
-  
+  API_URL_PHOTO= environment.api_photo;
   idElement:any;
   elementTramo : ElementTramoModel;
+  user : UsuarioModel;
   constructor(    
     private geolocation: Geolocation,
     private elementTramoService: ElementTramoService,
@@ -53,6 +56,11 @@ export class LeafletMapPage implements OnInit {
     ) { }
 
   ngOnInit() {
+    this.user=localStorage.getItem('currentUser')?JSON.parse(localStorage.getItem('currentUser')):null;
+    /*JSON.localStorage.getItem('currentUser');
+
+    localStorage.setItem("currentUser",JSON.stringify( result.user));*/
+    /*this.user = UsuarioModel */
   }
 
 

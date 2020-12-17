@@ -109,7 +109,7 @@ export class ElementTramoUpdatePage implements OnInit {
   fileTemp:any;
 
   loading:any;
-
+  user:UsuarioModel;
   constructor(
     private elementTramoService: ElementTramoService,
     private geolocation: Geolocation,
@@ -128,6 +128,7 @@ export class ElementTramoUpdatePage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.user=localStorage.getItem('currentUser')?JSON.parse(localStorage.getItem('currentUser')):null;
 
     /*this.elemento = new ElementTramoModel();   */
 

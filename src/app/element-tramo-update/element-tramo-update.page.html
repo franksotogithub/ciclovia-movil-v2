@@ -106,7 +106,8 @@
      <img  *ngIf="image" [src]="image" alt="image">
     </ion-col>
 
-    <ion-col size="12">
+
+    <ion-col *ngIf="user.id_rol==1" size="12">
       <ion-button 
       expand ="full" 
       shape="full"  
@@ -118,7 +119,7 @@
     </ion-col>
 
 
-    <ion-col size="12">
+    <ion-col *ngIf="user.id_rol==1" size="12">
       <ion-button 
       expand ="full" 
       shape="full"  

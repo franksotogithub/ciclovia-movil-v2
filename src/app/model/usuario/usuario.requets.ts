@@ -5,7 +5,7 @@ export interface UsuarioRequest {
   password : string;
   name: string;
 
-
+  id_rol :number;
   first_name: string;
   last_name: string;
 

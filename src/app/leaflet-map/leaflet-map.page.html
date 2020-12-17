@@ -20,7 +20,7 @@
      
       </div>
       
-        <ion-fab-button id="addPoint" (click)="add()"><ion-icon name="add"></ion-icon></ion-fab-button>
+        <ion-fab-button *ngIf="user.id_rol==1" id="addPoint" (click)="add()"><ion-icon name="add"></ion-icon></ion-fab-button>
         <ion-fab-button id="currentLocation" (click)="currentLocation()"><ion-icon name="locate"></ion-icon></ion-fab-button>
 
         <div id="popup" *ngIf="elementTramo">
@@ -40,10 +40,40 @@
           </ion-grid>
 
         -->
-        <ion-label> Tramo:{{elementTramo.tramo.nombre}} </ion-label><br>
-        <ion-label> Elemento: {{elementTramo.elemento}} </ion-label>
-          <ion-button (click)="goUpdate()">Ver </ion-button>
-          <!--<a [routerLink]="['/element-tramo-update',elementTramo.id]" >Ver</a>-->
+        <ion-grid>
+
+          <ion-row>
+            <ion-col size="3">
+              <ion-avatar>
+                <img src="{{API_URL_PHOTO}}{{elementTramo.img}}">
+              </ion-avatar>
+           
+            </ion-col>
+
+            <ion-col size="9">
+              <ion-row>
+                 Tramo:{{elementTramo.tramo.nombre}} 
+              </ion-row>
+
+              <ion-row>
+                 Observacion: {{elementTramo.observacion}}
+              </ion-row>
+              <ion-row>
+                <ion-button (click)="goUpdate()">Ver </ion-button>
+              </ion-row>
+            </ion-col>
+            
+
+          </ion-row>
+
+         
+
+        </ion-grid>
+
+      
+      
+     
+         
         </div>
     </div>
   </div>
