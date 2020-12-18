@@ -110,6 +110,7 @@ export class ElementTramoUpdatePage implements OnInit {
 
   loading:any;
   user:UsuarioModel;
+  edicion:boolean=true;
   constructor(
     private elementTramoService: ElementTramoService,
     private geolocation: Geolocation,
@@ -131,7 +132,7 @@ export class ElementTramoUpdatePage implements OnInit {
     this.user=localStorage.getItem('currentUser')?JSON.parse(localStorage.getItem('currentUser')):null;
 
     /*this.elemento = new ElementTramoModel();   */
-
+    if(this.user.id_rol!=1) this.edicion =false;
     const API_URL_PHOTO= environment.api_photo;
   
     this.route.params.subscribe(params => {
@@ -197,7 +198,9 @@ export class ElementTramoUpdatePage implements OnInit {
 
   getUsuario(){
     let user: UsuarioModel=JSON.parse( localStorage.getItem("currentUser"));
-    this.elemento.usuario=user.username;
+    if(user.id_rol==1){
+      this.elemento.usuario=user.username;
+    }
   }
   
  

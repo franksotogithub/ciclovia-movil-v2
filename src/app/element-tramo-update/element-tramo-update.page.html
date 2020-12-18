@@ -70,7 +70,7 @@
       <div>
         <ion-item *ngIf ="estados && estados.length>0">
           <ion-label>Estado del elemento: </ion-label>
-          <ion-select [(ngModel)]="elemento.estado" >
+          <ion-select [(ngModel)]="elemento.estado"  [disabled]="!edicion">
             <ion-select-option *ngFor="let item of estados"  value="{{item.value}}" >
               {{ item.text}}
             </ion-select-option>
@@ -87,27 +87,34 @@
     <ion-col size="12">
       <ion-item >
         <ion-label position="floating">Escriba una observacion:</ion-label>
-        <ion-textarea  [(ngModel)]="elemento.observacion"  rows="5" ></ion-textarea>        
+        <ion-textarea  [(ngModel)]="elemento.observacion"  rows="5" [disabled]="!edicion" ></ion-textarea>        
       </ion-item>
     </ion-col>
 
   </ng-template>
+    
+  <ion-col size="12" *ngIf="!edicion">
+    <ion-item >
+      <ion-label position="floating">Usuario:</ion-label>
+      <ion-input  [(ngModel)]="elemento.usuario"  rows="5"  [disabled]="!edicion" ></ion-input>        
+    </ion-item>
+  </ion-col>
 
+  
 
-
-    <ion-col size="12">
+    <ion-col size="12" >
       <ion-button 
       expand ="full" 
       shape="full"  
       color ="tertiary" 
-    (click)="takePicture()"
-      > <ion-icon name="camera-outline"></ion-icon> Foto</ion-button>
+    (click)="takePicture()" [disabled]="!edicion"
+      > <ion-icon name="camera-outline" ></ion-icon> Foto</ion-button>
 
      <img  *ngIf="image" [src]="image" alt="image">
     </ion-col>
 
 
-    <ion-col *ngIf="user.id_rol==1" size="12">
+    <ion-col *ngIf="edicion" size="12">
       <ion-button 
       expand ="full" 
       shape="full"  
@@ -119,7 +126,7 @@
     </ion-col>
 
 
-    <ion-col *ngIf="user.id_rol==1" size="12">
+    <ion-col *ngIf="edicion" size="12">
       <ion-button 
       expand ="full" 
       shape="full"  

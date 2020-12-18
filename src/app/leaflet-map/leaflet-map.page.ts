@@ -38,6 +38,7 @@ export class LeafletMapPage implements OnInit {
   currentLocationMarker:any;
   elementTramoMarkerList:any[]=[];
   myInterval:any;
+  myInterval2:any;
   eventHandlerAssigned=false;
   API_URL_PHOTO= environment.api_photo;
   idElement:any;
@@ -57,6 +58,7 @@ export class LeafletMapPage implements OnInit {
 
   ngOnInit() {
     this.user=localStorage.getItem('currentUser')?JSON.parse(localStorage.getItem('currentUser')):null;
+
     /*JSON.localStorage.getItem('currentUser');
 
     localStorage.setItem("currentUser",JSON.stringify( result.user));*/
@@ -73,6 +75,11 @@ export class LeafletMapPage implements OnInit {
     this.addPoints();
 
     this.myInterval=setInterval(()=>{ this.getCurrentPoint(false); }, 5000);
+    
+    if(this.user.id_rol>1){
+      this.myInterval2=setInterval(()=>{ this.addPoints(); }, 60000);
+      /*this.addPoints();*/
+    }
   }
  // The below function is added
   
@@ -311,7 +318,14 @@ polygon.setStyle(myStyle)
 
 
   ionViewDidLeave() {  
-    clearInterval(this.myInterval);
+    if(this.myInterval){
+      clearInterval(this.myInterval);
+    }
+    
+    if(this.myInterval2){
+      clearInterval(this.myInterval2);
+    }
+    
     this.map.remove();
     this.map = null;
   }

@@ -51,7 +51,7 @@ export class EsriMapPage implements OnInit {
 
   listVia : CicloViaModel[]; 
   graphicsLayerVias:any;
-
+user: UsuarioModel;
   constructor(
     private geolocation: Geolocation,
 
@@ -151,6 +151,8 @@ export class EsriMapPage implements OnInit {
 
 
   ngOnInit() {
+ 
+  
     this.initializeMap();
     
 
