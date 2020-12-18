@@ -25,6 +25,7 @@ import {LoadingController}  from  '@ionic/angular';
 
 import {environment} from 'src/environments/environment';
 import { async } from '@rxweb/reactive-form-validators';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-element-tramo-update',
@@ -126,12 +127,12 @@ export class ElementTramoUpdatePage implements OnInit {
     private ref: ChangeDetectorRef,
     public loadingCtrl: LoadingController,
     private route: ActivatedRoute,  
+    public platform: Platform,
   ) { }
 
   ngOnInit() {
-    this.user=localStorage.getItem('currentUser')?JSON.parse(localStorage.getItem('currentUser')):null;
+    this.user=localStorage.getItem('currentUser')?JSON.parse(localStorage.getItem('currentUser')):null;    
 
-    /*this.elemento = new ElementTramoModel();   */
     if(this.user.id_rol!=1) this.edicion =false;
     const API_URL_PHOTO= environment.api_photo;
   
