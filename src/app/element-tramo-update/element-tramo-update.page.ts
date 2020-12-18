@@ -112,6 +112,7 @@ export class ElementTramoUpdatePage implements OnInit {
   loading:any;
   user:UsuarioModel;
   edicion:boolean=true;
+  id:number;
   constructor(
     private elementTramoService: ElementTramoService,
     private geolocation: Geolocation,
@@ -127,7 +128,7 @@ export class ElementTramoUpdatePage implements OnInit {
     private ref: ChangeDetectorRef,
     public loadingCtrl: LoadingController,
     private route: ActivatedRoute,  
-    public platform: Platform,
+    public plataform: Platform,
   ) { }
 
   ngOnInit() {
@@ -137,8 +138,8 @@ export class ElementTramoUpdatePage implements OnInit {
     const API_URL_PHOTO= environment.api_photo;
   
     this.route.params.subscribe(params => {
-      let id = parseInt(params.id); 
-      this.elementTramoService.getElementTramo(id).subscribe((res)=>{
+      this.id = parseInt(params.id); 
+      this.elementTramoService.getElementTramo(this.id).subscribe((res)=>{
         if(res){
           this.elemento = new  ElementTramoModel(res);
           this.image = (this.elemento.img)?`${API_URL_PHOTO}${this.elemento.img}`:null; 
@@ -159,9 +160,16 @@ export class ElementTramoUpdatePage implements OnInit {
 
   
   ionViewDidEnter(){
-    
 
+    if(this.plataform.is('mobileweb') || this.plataform.is('desktop')){
+      const imageTemp = localStorage.getItem('image')?localStorage.getItem('image'):null;    
+      if(imageTemp){
+        this.image =imageTemp;
+      }
+    }
+    
   }
+
 
 
   initVia(){  
@@ -242,9 +250,16 @@ export class ElementTramoUpdatePage implements OnInit {
       
     (await this.loading).present();
   
+   
 
-    if(this.fileTemp){      
-      let name=this.readFile(this.fileTemp);
+     if(this.image!==this.elemento.img ){   
+      if(this.plataform.is('mobileweb') || this.plataform.is('desktop') ){
+        let name=this.readFileAndSave();
+      }   
+      else{
+        let name=this.readFile(this.fileTemp);
+      }
+      
 
     }
     else{
@@ -257,6 +272,7 @@ export class ElementTramoUpdatePage implements OnInit {
 
   updateElement(){   
     this.elementTramoService.updateElementTramo(this.elemento.id,this.elemento).subscribe( async(e)=>{
+      localStorage.removeItem('image');
       (await this.loading).dismiss();
       this.navCtrl.navigateForward("/leaflet-map"); 
 
@@ -271,6 +287,7 @@ export class ElementTramoUpdatePage implements OnInit {
 
 
   regresar(){    
+    localStorage.removeItem('image');
     this.navCtrl.navigateForward("/leaflet-map");   
   }
 
@@ -279,37 +296,51 @@ export class ElementTramoUpdatePage implements OnInit {
   }
 
 
+ 
   takePicture(){
-
-   const options: CameraOptions = {
-    quality: 100,
-    destinationType: this.camera.DestinationType.FILE_URI,
-    encodingType: this.camera.EncodingType.JPEG,
-    mediaType: this.camera.MediaType.PICTURE,
-    sourceType:this.camera.PictureSourceType.CAMERA,
-    targetWidth:720,
-    correctOrientation: true,
-  }
     
+    if(this.plataform.is('mobileweb') || this.plataform.is('desktop')){
+      localStorage.setItem('urlPreview',`/element-tramo-update/${this.id}`);
+      this.navCtrl.navigateForward('/camera'); 
 
+    }
 
-   this.camera.getPicture(options).then((imageData) => {
-    this.image = this.webView.convertFileSrc(imageData);
-    this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
-      entry.file(file => {
-        console.log(file);
+    else{
+
+      const options: CameraOptions = {
+        quality: 100,
+        destinationType: this.camera.DestinationType.FILE_URI,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE,
+        sourceType:this.camera.PictureSourceType.CAMERA,
+        targetWidth:720,
+        correctOrientation: true,
+      }
         
-        this.fileTemp = file;
+    
+     
+    
+       this.camera.getPicture(options).then((imageData) => {
+        this.image = this.webView.convertFileSrc(imageData);
+        this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
+          entry.file(file => {
+            console.log(file);
+           
+            this.fileTemp = file;
+          });
+        });
+      }, (err) => {
+       
       });
-    });
-  }, (err) => {
-    // Handle error
-  });
+    
+    
+    }
+
+ 
+
 
 
   }
-
-
 
 
    readFile(file: any) {
@@ -347,4 +378,24 @@ export class ElementTramoUpdatePage implements OnInit {
     });   
 
   }
+
+
+  readFileAndSave(){
+
+    const formData = new FormData();
+    
+    fetch(this.image).then(value=>{
+      value.blob().then( (blob:Blob)=>{
+       formData.append('file', blob, 'ejemplo.jpg');
+        this.fileService.uploadFile(formData).toPromise().then(e=>{
+          this.elemento.img=e['file']['filename'];
+          this.updateElement();
+      });
+      }
+     );
+    });
+    
+  }
+
+
 }

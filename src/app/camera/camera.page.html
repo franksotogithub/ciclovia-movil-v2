@@ -31,17 +31,17 @@
           <div  class="col-4">
             <span class="dot" (click)="triggerSnapshot();"></span>
           </div>
-
-          
+          <div class="col-4" > </div>
+          <!--
           <div class="col-4 snapshot" (click)="openPhoto()" > 
             <ng-container *ngIf="imageAsDataUrl;else html1">
               <img [src]="imageAsDataUrl"/>
             </ng-container>
             <ng-template #html1>
-              <!--<img src='assets/img/img-default.jpg'/>-->
+              <img src='assets/img/img-default.jpg'/>
             </ng-template>  
           </div>
-
+        -->
           
         </div>
 
@@ -52,12 +52,16 @@
           <img [src]="imageAsDataUrl"/>
         </div>
         <div class ='tools row'>
+          <!--
           <div   class="col-4" >
-            <!--<button mat-mini-fab (click)="close()" ><mat-icon>close</mat-icon></button>-->
+     
             
           </div>
-
-          <div   class="col-4" >
+        -->
+          <div   class="col-6" >
+             <ion-button (click)="guardar()"  expand ="full" 
+             shape="full"  >Aceptar</ion-button>
+            <!--<ion-buttom > </ion-fab-buttom>-->
             <!--<button mat-mini-fab (click)="guardar()" ><mat-icon aria-hidden="false" aria-label="Example home icon">save</mat-icon></button>-->
             
           </div>
@@ -66,7 +70,10 @@
 
           
 
-          <div class="col-4"  >
+          <div class="col-6"  >
+            <ion-button (click)="back()"  expand ="full" 
+            shape="full"  >Repetir</ion-button>
+            <!--<button mat-raised-button (click)="back()" ><mat-icon >Repetir</mat-icon></button>-->
             <!--<button mat-raised-button (click)="back()" ><mat-icon >videocam</mat-icon></button>-->
             
           </div>

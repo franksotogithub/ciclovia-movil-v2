@@ -21,7 +21,8 @@ import { File, IWriteOptions,FileEntry } from '@ionic-native/File/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs';
-import {LoadingController}  from  '@ionic/angular'; 
+import {LoadingController,Platform}  from  '@ionic/angular'; 
+
 
 const STORAGE_KEY = 'my_images';
 
@@ -121,8 +122,9 @@ export class ElementTramoPage implements OnInit {
     private filePath: FilePath,
     private storage: Storage,
     private ref: ChangeDetectorRef,
-    public loadingCtrl: LoadingController
+    public loadingCtrl: LoadingController,
     /*private storage: AngularFireStorage*/
+    public plataform: Platform
   ) { }
 
   ngOnInit() {
@@ -142,7 +144,16 @@ export class ElementTramoPage implements OnInit {
   }
 
 
+  ionViewDidEnter(){
 
+    if(this.plataform.is('mobileweb') || this.plataform.is('desktop')){
+      const imageTemp = localStorage.getItem('image')?localStorage.getItem('image'):null;    
+      if(imageTemp){
+        this.image =imageTemp;
+      }
+    }
+    
+  }
 
 
   getUsuario(){
@@ -205,30 +216,20 @@ export class ElementTramoPage implements OnInit {
     (await this.loading).present();
   
 
-    if(this.fileTemp){      
-      let name=this.readFile(this.fileTemp);
+    if(this.image){   
+      if(this.plataform.is('mobileweb') || this.plataform.is('desktop') ){
+        let name=this.readFileAndSave();
+      }   
+      else{
+        let name=this.readFile(this.fileTemp);
+      }
+      
 
     }
     else{
       this.createElement();
     }
-      /*
-    
-    if(this.elemento.id){
       
-      let name=this.readFile(this.fileTemp);
-      console.log('name>>',name);
-
-    }
-
-    else{
-
-      let name=this.readFile(this.fileTemp);
-      console.log('name>>',name);
-
-      
-
-    }    */
   }
 
 
@@ -238,6 +239,7 @@ export class ElementTramoPage implements OnInit {
    createElement(){
       
       this.elementTramoService.createElementTramo(this.elemento).subscribe(async (e)=>{
+        localStorage.removeItem('image');
         (await this.loading).dismiss();
         this.navCtrl.navigateForward("/leaflet-map"); 
       });
@@ -254,6 +256,7 @@ export class ElementTramoPage implements OnInit {
 
 
   regresar(){    
+    localStorage.removeItem('image');
     this.navCtrl.navigateForward("/leaflet-map");   
   }
 
@@ -267,39 +270,46 @@ export class ElementTramoPage implements OnInit {
 
 
   takePicture(){
+    console.log('platforms>>',this.plataform.platforms());
+    if(this.plataform.is('mobileweb') || this.plataform.is('desktop')){
+      localStorage.setItem('urlPreview','/element-tramo');
+      this.navCtrl.navigateForward('/camera'); 
 
- 
+    }
 
-   const options: CameraOptions = {
-    quality: 100,
-    destinationType: this.camera.DestinationType.FILE_URI,
-    encodingType: this.camera.EncodingType.JPEG,
-    mediaType: this.camera.MediaType.PICTURE,
-    sourceType:this.camera.PictureSourceType.CAMERA,
-    targetWidth:720,
-    correctOrientation: true,
-  }
+    else{
+
+      const options: CameraOptions = {
+        quality: 100,
+        destinationType: this.camera.DestinationType.FILE_URI,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE,
+        sourceType:this.camera.PictureSourceType.CAMERA,
+        targetWidth:720,
+        correctOrientation: true,
+      }
+        
     
+     
+    
+       this.camera.getPicture(options).then((imageData) => {
+        this.image = this.webView.convertFileSrc(imageData);
+        this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
+          entry.file(file => {
+            console.log(file);
+           
+            this.fileTemp = file;
+          });
+        });
+      }, (err) => {
+       
+      });
+    
+    
+    }
 
  
 
-   this.camera.getPicture(options).then((imageData) => {
-    this.image = this.webView.convertFileSrc(imageData);
-    this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
-      entry.file(file => {
-        console.log(file);
-       
-        this.fileTemp = file;
-      });
-    });
-  }, (err) => {
-   
-  });
-
-
-/*
-
-this.navCtrl.navigateForward('/camera'); */
 
 
   }
@@ -341,170 +351,25 @@ this.navCtrl.navigateForward('/camera'); */
 
 
 
+ 
+
+readFileAndSave(){
+
+  const formData = new FormData();
   
-  /*
-  uploadPicture(callback){
-
-
-    const randomID= Math.random().toString(36).substring(2,8);
-    const filePath=`files/${new Date().getTime()}_${randomID}`
-    const uploadTask = this.storage.upload(filePath,this.image);
-    const fileRef = this.storage.ref(filePath);
-
-    uploadTask.percentageChanges().subscribe(changes=>{
-
-      this.uploadProgress = changes;
-
-
+  fetch(this.image).then(value=>{
+    value.blob().then( (blob:Blob)=>{
+     formData.append('file', blob, 'ejemplo.jpg');
+      this.fileService.uploadFile(formData).toPromise().then(e=>{
+        this.elemento.img=e['file']['filename'];
+        this.createElement();
     });
-
-
-    uploadTask.snapshotChanges().pipe(
-      finalize(() => {
-        fileRef.getDownloadURL().subscribe((url)=>{ 
-        this.elemento.img= url;
-        callback();
-
-      });} 
-    )
-   )
-  .subscribe()
-
-  }*/
-
-
-
-
-  /*
-
-
-
-  
-  pathForImage(img) {
-    if (img === null) {
-      return '';
-    } else {
-      let converted = this.webView.convertFileSrc(img);
-      return converted;
     }
-  }
- 
-
-
-  createFileName() {
-    var d = new Date(),
-        n = d.getTime(),
-        newFileName = n + ".jpg";
-    return newFileName;
-}
- 
-copyFileToLocalDir(namePath, currentName, newFileName) {
-    this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
-        this.updateStoredImages(newFileName);
-    }, error => {
-        this.presentToast('Error while storing file.');
-    });
-}
-
-updateStoredImages(name) {
-  this.storage.get(STORAGE_KEY).then(images => {
-      let arr = JSON.parse(images);
-      if (!arr) {
-          let newImages = [name];
-          this.storage.set(STORAGE_KEY, JSON.stringify(newImages));
-      } else {
-          arr.push(name);
-          this.storage.set(STORAGE_KEY, JSON.stringify(arr));
-      }
-
-      let filePath = this.file.dataDirectory + name;
-      let resPath = this.pathForImage(filePath);
-
-      let newEntry = {
-          name: name,
-          path: resPath,
-          filePath: filePath
-      };
-
-      this.images = [newEntry, ...this.images];
-      this.ref.detectChanges(); // trigger change detection cycle
+   );
   });
+  
 }
 
 
-
-
-deleteImage(imgEntry, position) {
-  this.images.splice(position, 1);
-
-  this.storage.get(STORAGE_KEY).then(images => {
-      let arr = JSON.parse(images);
-      let filtered = arr.filter(name => name != imgEntry.name);
-      this.storage.set(STORAGE_KEY, JSON.stringify(filtered));
-
-      var correctPath = imgEntry.filePath.substr(0, imgEntry.filePath.lastIndexOf('/') + 1);
-
-      this.file.removeFile(correctPath, imgEntry.name).then(res => {
-          this.presentToast('File removed.');
-      });
-  });
-}
-
-
-
-
-
-
-startUpload(imgEntry) {
-  this.file.resolveLocalFilesystemUrl(imgEntry.filePath)
-      .then(entry => {
-          ( < FileEntry > entry).file(file => this.readFile(file))
-      })
-      .catch(err => {
-          this.presentToast('Error while reading file.');
-      });
-}
-
-
-readFile(file: any) {
-  const reader = new FileReader();
-  reader.onload = () => {
-      const formData = new FormData();
-      const imgBlob = new Blob([reader.result], {
-          type: file.type
-      });
-      formData.append('file', imgBlob, file.name);
-      this.uploadImageData(formData);
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-
-
-
-
-async uploadImageData(formData: FormData) {
-  const loading = await this.loadingController.create({
-      message: 'Uploading image...',
-  });
-  await loading.present();
-
-  this.http.post("http://localhost:8888/upload.php", formData)
-      .pipe(
-          finalize(() => {
-             loading.dismiss();
-          })
-      )
-      .subscribe(res => {
-          
-        
-        if (res['success']) {
-              this.presentToast('File upload complete.')
-          } else {
-              this.presentToast('File upload failed.')
-          }
-      });
-}*/
- 
 
 }
