@@ -24,7 +24,7 @@
 -->
 <ion-grid>
 
-  <ion-row >
+  <ion-row>
     <ion-col   size-xs="12">
       <div padding *ngIf="tramo">
         
@@ -37,16 +37,10 @@
        
         
         
-        <ion-item>
-          <ion-label>Distrito:</ion-label>
-          <ion-input  [(ngModel)]="tramo.distrito" disabled></ion-input>    
-        </ion-item>
+       
       
         <ion-item>
-          <!--<ion-label>Tramo:</ion-label>
-          <ion-input  [(ngModel)]="tramo"></ion-input>    -->
-      
-      
+
           
           <ion-label>Tramo:</ion-label>
       
@@ -54,31 +48,46 @@
           
         </ion-item>
       
-      
+      <!--
         <ion-item>
           <ion-label>Fecha:</ion-label>
           <ion-datetime  value="{{dateNow}}"  display-timezone="utc" display-format="DD/MM/YYYY" disabled  ></ion-datetime>
         </ion-item>
-        
+      -->
       
         <ion-item>
           <ion-label>Responsable:</ion-label>
           <ion-input  [(ngModel)]="tramo.usuario"   disabled ></ion-input>  
         </ion-item>
       
+
         <ion-item>
           <ion-label>Seccion Vial Normativa:</ion-label>
           <ion-input  [(ngModel)]="tramo.seccion_vial_normativa"   disabled ></ion-input>  
         </ion-item>
       
         <ion-item>
-          <ion-label>Seccion Vial Actual:</ion-label>
-          <ion-input  [(ngModel)]="tramo.seccion_vial_actual" ></ion-input>  
+          <ion-label>Corte CicloVia Actual:</ion-label>
+          <ion-input  [(ngModel)]="tramo.seccion_vial_actual"></ion-input>  
         </ion-item>
         
         
-        <ion-item>
-        <ion-label>Sentido: </ion-label>
+   
+      
+      
+      <ion-item>
+        <ion-label>Tipología: </ion-label>
+        <ion-select [(ngModel)]="tramo.tipo">
+          <ion-select-option *ngFor="let item of tiposVia"  value="{{item.value}}" >
+            {{ item.text}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+
+
+      <ion-item>
+        <ion-label>Sentido de ciclovia: </ion-label>
         <ion-select [(ngModel)]="tramo.sentido"   >
           <ion-select-option *ngFor="let item of sentidoVia"  value="{{item.value}}" >
             {{ item.text}}
@@ -86,24 +95,355 @@
         </ion-select>
       </ion-item>
       
-      
+
       <ion-item>
-        <ion-label>Tipo: </ion-label>
-        <ion-select [(ngModel)]="tramo.tipo"   >
-          <ion-select-option *ngFor="let item of tiposVia"  value="{{item.value}}" >
+        <ion-label>Ubicación en Via(Predominancia): </ion-label>
+        <ion-select [(ngModel)]="tramo.ubicacion"   >
+          <ion-select-option *ngFor="let item of ubicacion"  value="{{item.value}}" >
             {{ item.text}}
           </ion-select-option>
         </ion-select>
       </ion-item>
+
+      <ion-grid>
+        <ion-row>Espacio de delimitacion de ciclovia(Porcentaje en base a la longitud total de la ciclovía): </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item><strong> JARDINERA CON VEGETACION </strong> </ion-item>
+            <ion-item>
+              <ion-label >Ancho Promedio</ion-label>
+              <ion-input type="number" [(ngModel)]="tramo.espacio_1_ancho" >                
+                
+
+
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label >Porcentaje</ion-label>
+              <ion-input  type="number" [(ngModel)]="tramo.espacio_1_porcentaje" >  </ion-input>
+            </ion-item>
+
+
+
+          </ion-col>
+          
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-item><strong>VEREDA </strong> </ion-item>
+            <ion-item>
+              <ion-label >Ancho Promedio</ion-label>
+              <ion-input  type="number" [(ngModel)]="tramo.espacio_2_ancho" >  </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label >Porcentaje</ion-label>
+              <ion-input  type="number" [(ngModel)]="tramo.espacio_2_porcentaje" >  </ion-input>
+            </ion-item>
+
+
+
+          </ion-col>
+          
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item><strong>ESTACIONAMIENTOS VEHICULAR PUBLICO </strong> </ion-item>
+            <ion-item>
+              <ion-label >Ancho Promedio</ion-label>
+              <ion-input  type="number" [(ngModel)]="tramo.espacio_3_ancho" >  </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label >Porcentaje</ion-label>
+              <ion-input  type="number" [(ngModel)]="tramo.espacio_3_porcentaje" >  </ion-input>
+            </ion-item>
+
+
+
+          </ion-col>
+          
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item><strong>RAMPA DE ACCESO VEHICULAR </strong> </ion-item>
+            <ion-item>
+              <ion-label >Ancho Promedio</ion-label>
+              <ion-input  type="number" [(ngModel)]="tramo.espacio_4_ancho" >  </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label >Porcentaje</ion-label>
+              <ion-input   type="number" [(ngModel)]="tramo.espacio_4_porcentaje" >  </ion-input>
+            </ion-item>
+
+
+
+          </ion-col>
+          
+        </ion-row>
+
+      </ion-grid>
+
       
-      <ion-item>
-        <ion-label>Ancho:</ion-label>
-        <ion-input  [(ngModel)]="tramo.ancho" ></ion-input>  
-      </ion-item>
       
+      <ion-grid>
+        <ion-row>
+          Elemento segregador(Porcentaje en base a la longitud total de la ciclovía):
+
+        </ion-row>
+        <ion-row   *ngFor="let item of elemSegregadorList"   >
+          <ion-col size="3">
+            <ion-avatar>
+              <img src="./assets/img/{{item.img}}">
+            </ion-avatar>
+          </ion-col>
+
+
+          <ion-col size="9">            
+            <ng-container *ngIf="!item.otro else temp2">
+              <ion-label><strong>{{tramo[item.nombre]}}</strong></ion-label>
+         
+            </ng-container>
+
+            <ng-template #temp2>
+              <ion-item>
+
+                <ion-label>Otro(escribalo):</ion-label>
+              <ion-input [(ngModel)]="tramo[item.nombre]" > </ion-input>
+              </ion-item>
+              
+            </ng-template>
+
+            
+                <ion-item>
+                  <ion-label position="stacked" >Calificacion </ion-label>
+                  <ion-select  [(ngModel)]="tramo[item.estado]" >                
+                    <ion-select-option *ngFor="let item of calificacion"  value="{{item.value}}" >
+                      {{ item.text}}
+                    </ion-select-option>
+                  </ion-select>
+        
+                </ion-item>
+                <ion-item>
+                  <ion-label position="stacked" >Porcentaje </ion-label>
+                  <ion-input  [(ngModel)]="tramo[item.porcentaje]" type="number" >                
+
+                  </ion-input>
+                </ion-item>
+                
+          </ion-col>
+
+
+
+        </ion-row>
+
+      
+
+      </ion-grid>
     
+
+
+      <ion-grid>
+
+
+        <ion-row>
+          Estado de la señalizacion vertical:
+        </ion-row>
+        <ion-row *ngFor="let item of senialVericalList2">
+          <ion-col size="3">
+            <ion-avatar>
+              <img src="./assets/img/{{item.img}}">
+            </ion-avatar>
+          </ion-col>
+          
+          <ion-col size="9">            
+            <ng-container *ngIf="!item.otro else temp1">
+              <ion-label><strong>{{tramo[item.nombre]}}</strong></ion-label>
+         
+            </ng-container>
+            <ng-template #temp1>
+
+              <ion-select  [(ngModel)]="tramo[item.nombre]"  (ionChange)="onChange($event,item)" >                
+                <ion-select-option *ngFor="let item2 of senial_otros"  value="{{item2.value}}"  >
+                  {{ item2.text}}
+                </ion-select-option>
+              </ion-select>
+
+            </ng-template>
+            
+                <ion-item>
+
+                  
+                  <ion-label position="stacked" >Cantidad Buena </ion-label>
+                  <ion-input type="number" [(ngModel)]="tramo[item.cant_buena]" (ionChange)="onChangeCantidadSv($event,tramo,item)" >
+                 
+                  </ion-input>
+                  
+        
+                </ion-item>
+                <ion-item>
+                  <ion-label position="stacked" >Cantidad Regular </ion-label>
+                  <ion-input type="number"  [(ngModel)]="tramo[item.cant_regular]" (ionChange)="onChangeCantidadSv($event,tramo,item)" >
+                    
+                  </ion-input>
+                  
+        
+                </ion-item>
+                <ion-item>
+                  <ion-label position="stacked" >Cantidad Mala </ion-label>
+                  <ion-input type="number"   [(ngModel)]="tramo[item.cant_mala]"  (ionChange)="onChangeCantidadSv($event,tramo,item)" >
+
+                  </ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="stacked"  >Total </ion-label>
+                  <ion-input type="number"   [(ngModel)]="tramo[item.total]" [disabled]="true"  >                
+
+                  </ion-input>
+                </ion-item>
+                
+          </ion-col>
+        </ion-row>
+
+      </ion-grid>
     
+      <ion-grid>
+
+
+        <ion-row>
+         Señalizacion Horizontal(Porcentaje en base a la señalización):
+        </ion-row>
+
+        <ion-row *ngFor="let item of senialHList">
+          <ion-col size="3">
+            <ion-avatar>
+              <img src="./assets/img/{{item.img}}">
+            </ion-avatar>
+          </ion-col>
+          
+          <ion-col size="9">            
+          
+              <ion-label><strong>{{tramo[item.nombre]}}</strong></ion-label>
+         
+       
+            
+                <ion-item>
+
+                  
+                  <ion-label position="stacked" >Porcentaje Bueno </ion-label>
+                  <ion-input type="number" [(ngModel)]="tramo[item.cant_buena]"  >
+                 
+                  </ion-input>
+                  
+        
+                </ion-item>
+                <ion-item>
+                  <ion-label position="stacked" >Porcentaje Regular </ion-label>
+                  <ion-input type="number"  [(ngModel)]="tramo[item.cant_regular]"  >
+                    
+                  </ion-input>
+                  
+        
+                </ion-item>
+                <ion-item>
+                  <ion-label position="stacked" >Porcentaje Malo </ion-label>
+                  <ion-input type="number"   [(ngModel)]="tramo[item.cant_mala]"  >
+
+                  </ion-input>
+                </ion-item>
+            
+                
+          </ion-col>
+        </ion-row>
+
+      </ion-grid>
+
+
     
+      <ion-grid>
+
+
+        <ion-row>
+          ESTADO ACTUAL DE LA CICLOVIA (Porcentaje en base a la longitud total de la ciclovía):
+        </ion-row>
+
+        <ion-row *ngFor="let item of estadoList">
+        
+          
+          <ion-col size="12">            
+          
+              <ion-label><strong>{{tramo[item.nombre]}}</strong></ion-label>
+         
+       
+            
+                <ion-item>
+
+                  
+                  <ion-label position="stacked" >Porcentaje  </ion-label>
+                  <ion-input type="number" [(ngModel)]="tramo[item.porcentaje]"  >
+                 
+                  </ion-input>
+                  
+        
+                </ion-item>
+                <ion-item>
+                  <ion-label position="stacked" >Observacion </ion-label>
+                  <ion-input type="text"  [(ngModel)]="tramo[item.obs]"  >
+                    
+                  </ion-input>
+                  
+        
+                </ion-item>
+  
+            
+                
+          </ion-col>
+        </ion-row>
+
+      </ion-grid>
+
+
+
+
+
+      <ion-grid>
+
+
+        <ion-row>
+         Seguridad(Porcentaje en base a la señalización):
+        </ion-row>
+
+        <ion-row *ngFor="let item of seguridadList">
+        
+          
+          <ion-col size="12">            
+          
+              <ion-label><strong>{{tramo[item.nombre]}}</strong></ion-label>
+         
+                <ion-item>
+                  <ion-label position="stacked" >Porcentaje  </ion-label>
+                  <ion-input type="number" [(ngModel)]="tramo[item.porcentaje]"  >
+                 
+                  </ion-input>
+                  
+        
+                </ion-item>
+
+  
+            
+                
+          </ion-col>
+        </ion-row>
+
+
+      </ion-grid>
+
+
+
+
       </div>
         <ion-button expand ="full" 
       shape="full"  
