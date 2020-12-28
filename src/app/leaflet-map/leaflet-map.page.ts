@@ -73,8 +73,11 @@ export class LeafletMapPage implements OnInit {
     }
 
     this.addPoints();
-
-    this.myInterval=setInterval(()=>{ this.getCurrentPoint(false); }, 5000);
+    
+    if(this.user.id_rol==1){
+      this.myInterval=setInterval(()=>{ this.getCurrentPoint(false); }, 5000);
+    }
+    
     
     if(this.user.id_rol>1){
       this.myInterval2=setInterval(()=>{ this.addPoints(); }, 60000);
@@ -276,7 +279,7 @@ esri.dynamicMapLayer({
             coords
           ).addTo(this.map);
           polyline.setStyle(myStyle);
-          polyline.bindPopup(`Tramo: ${v.nombre}`);
+          polyline.bindPopup(`Tramo: ${v.nombre} `);
 
           /*
           

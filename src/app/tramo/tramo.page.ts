@@ -2,7 +2,7 @@ import { Component ,OnInit, ViewChild} from '@angular/core';
 import { PuntoCicloViaModel } from '../model/punto_ciclo_via/puntoCicloVia.model';
 import { PuntoCicloviaService } from '../services/punto-ciclovia.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { AlertController }  from '@ionic/angular';
+import { AlertController, LoadingController, Platform }  from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { RxFormBuilder } from '@rxweb/reactive-form-validators';
 import { TramoService } from '../services/tramo.service';
@@ -10,8 +10,10 @@ import { FormGroup } from '@angular/forms';
 import { TramoModel } from '../model/tramo/tramo.model';
 import { UsuarioModel } from '../model/usuario/usuario.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SenialVerticalRequest} from '../model/senial_vertical/senial_vertical';
-
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import {Camera,CameraOptions} from '@ionic-native/camera/ngx';
+import { FileService } from '../services/file.service';
+import { File, IWriteOptions,FileEntry } from '@ionic-native/File/ngx';
 @Component({
   selector: 'app-tramo',
   templateUrl: './tramo.page.html',
@@ -70,31 +72,7 @@ export class TramoPage implements OnInit {
 
 
   imgs:string[] =[];
-  /*senial:string;*/
-/*
-  senial:any=
-    {value:'p-46c',text:'P-46C',img:'p-46c.png'};
-*/
-
-  
-  senialVericalList:SenialVerticalRequest[]=[
-
-
-
-    /*
-    {nombre:'R-42',cant_buena:0,cant_regular:0,cant_mala:0,total:0,img:'r-42.png'},
-    {nombre:'P-46',cant_buena:0,cant_regular:0,cant_mala:0,total:0,img:'p-46.png'},
-
-    {nombre:'P-46A',cant_buena:0,cant_regular:0,cant_mala:0,total:0,img:'p-46a.png'},
-    {nombre:'P-46B',cant_buena:0,cant_regular:0,cant_mala:0,total:0,img:'p-46b.png'},*/
-
-    {nombre:'R-42',cant_buena:0,cant_regular:0,cant_mala:0,total:0,img:'r-42.png'},
-    {nombre:'P-46',cant_buena:0,cant_regular:0,cant_mala:0,total:0,img:'p-46.png'},
-
-    {nombre:'P-46A',cant_buena:0,cant_regular:0,cant_mala:0,total:0,img:'p-46a.png'},
-    {nombre:'P-46B',cant_buena:0,cant_regular:0,cant_mala:0,total:0,img:'p-46b.png'},
-
-  ];
+ 
 
   senialVericalList2:any[]=[
 
@@ -151,15 +129,11 @@ export class TramoPage implements OnInit {
 
   ]
 
-/*
 
-this.senial_v_1_tipo           =t?t.senial_v_1_tipo:'R-42';
-   this.senial_v_1_cant_buena     =t?.senial_v_1_cant_buena    ;          
-   this.senial_v_1_cant_regular   =t?.senial_v_1_cant_regular  ;        
-   this.senial_v_1_cant_mala      =t?.senial_v_1_cant_mala     ;  
+  image :any;
+  fileTemp:any;
 
-*/
-
+  loading:any;
 
   constructor(    
     public alertController: AlertController,
@@ -169,7 +143,12 @@ this.senial_v_1_tipo           =t?t.senial_v_1_tipo:'R-42';
     private formBuilder: RxFormBuilder,
     private tramoService: TramoService,
     private route: ActivatedRoute, 
- 
+    public plataform: Platform,
+    private camera: Camera,
+    private webView : WebView,
+    private fileService: FileService,
+    private file: File,
+    public loadingCtrl: LoadingController,
     ) { 
 
 
@@ -193,6 +172,19 @@ this.senial_v_1_tipo           =t?t.senial_v_1_tipo:'R-42';
 
     
   }
+
+
+  ionViewDidEnter(){
+
+    if(this.plataform.is('mobileweb') || this.plataform.is('desktop')){
+      const imageTemp = localStorage.getItem('image')?localStorage.getItem('image'):null;    
+      if(imageTemp){
+        this.image =imageTemp;
+      }
+    }
+    
+  }
+
 
   initUsuario(){  
     let usuario: UsuarioModel=JSON.parse( localStorage.getItem("currentUser"));    
@@ -220,13 +212,18 @@ this.senial_v_1_tipo           =t?t.senial_v_1_tipo:'R-42';
     this.navCtrl.navigateRoot("/element-tramo");     
    
   }
-  guardar(){
+
+  guardarTramo(){
 
     console.log('this.tramo>>>',this.tramo);
-    /*this.tramoService.updateTramo(this.tramo.id,this.tramo).subscribe(res=>{
+    this.tramoService.updateTramo(this.tramo.id,this.tramo).subscribe(res=>{
         this.navCtrl.navigateRoot("/element-tramo");    
     });
-*/
+
+
+
+
+
     /*if(this.puntoCicloVia.is_valid){
 
       
@@ -246,22 +243,147 @@ this.senial_v_1_tipo           =t?t.senial_v_1_tipo:'R-42';
   }
 
 
+  async guardar(){
+    
+    
+    this.loading =this.loadingCtrl.create({
+      message:'Por favor espere..'
+    });
+      
+    (await this.loading).present();
+  
+   
+
+     if(this.image &&this.image!==this.tramo.seccion_vial_actual){   
+      if(this.plataform.is('mobileweb') || this.plataform.is('desktop') ){
+        let name=this.readFileAndSave();
+      }   
+      else{
+        let name=this.readFile(this.fileTemp);
+      }
+      
+
+    }
+    else{
+      this.guardarTramo();
+     
+    }
+  
+  
+  }
+
+
+
   onChange(newValue,item){
     
     let s=this.senial_otros.find((e)=>e.value==newValue.target.value);
-    item.img=s.img;
-    
-    /*this.senial=s.img;*/
-  }
-  /*
-  onChangeCantidadSv(e,item:SenialVerticalRequest){
-
-    item.total = item.cant_buena + item.cant_mala + item.cant_regular; 
-  }*/
+    item.img=s.img;    
+  
+  } 
 
   onChangeCantidadSv(e,tramo,item:any){
     
     tramo[item.total] = tramo[item.cant_buena] + tramo[item.cant_mala] + tramo[item.cant_regular]; 
   }
+
+
+  
+  takePicture(){
+    
+    if(this.plataform.is('mobileweb') || this.plataform.is('desktop')){
+      localStorage.setItem('urlPreview','/element-tramo');
+      this.navCtrl.navigateForward('/camera'); 
+
+    }
+
+    else{
+
+      const options: CameraOptions = {
+        quality: 100,
+        destinationType: this.camera.DestinationType.FILE_URI,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE,
+        sourceType:this.camera.PictureSourceType.CAMERA,
+        targetWidth:720,
+        correctOrientation: true,
+      }
+        
+    
+     
+    
+       this.camera.getPicture(options).then((imageData) => {
+        this.image = this.webView.convertFileSrc(imageData);
+        this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
+          entry.file(file => {
+            console.log(file);
+           
+            this.fileTemp = file;
+          });
+        });
+      }, (err) => {
+       
+      });
+    
+    
+    }
+
+ 
+
+
+
+  }
+
+
+
+
+   readFile(file: any) {
+
+    let filename:any;
+
+    
+      const reader = new FileReader();
+      
+      filename=reader.onloadend = async () => {
+        const imgBlob = new Blob([reader.result], {
+          type: file.type
+        });
+        const formData = new FormData();
+      
+        formData.append('file', imgBlob, file.name);
+        this.fileService.uploadFile(formData).toPromise().then(e=>{
+            console.log('e>>',e['file']['filename']);
+            
+            this.tramo.seccion_vial_actual=e['file']['filename'];
+           
+        });
+        
+        
+      };
+      reader.readAsArrayBuffer(file);
+      return filename;
+
+  }
+
+
+
+ 
+
+readFileAndSave(){
+
+  const formData = new FormData();
+  
+  fetch(this.image).then(value=>{
+    value.blob().then( (blob:Blob)=>{
+     formData.append('file', blob, 'ejemplo.jpg');
+      this.fileService.uploadFile(formData).toPromise().then(e=>{
+        this.tramo.seccion_vial_actual=e['file']['filename'];
+        this.guardarTramo();
+    });
+    }
+   );
+  });
+  
+}
+
 
 }
