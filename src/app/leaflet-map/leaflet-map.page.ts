@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {Map,tileLayer,marker} from 'leaflet';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
@@ -21,6 +22,7 @@ import * as esri from 'esri-leaflet';
 import {environment} from 'src/environments/environment';
 import { UsuarioModel } from '../model/usuario/usuario.model';
 
+
 @Component({
   selector: 'app-leaflet-map',
   templateUrl: './leaflet-map.page.html',
@@ -42,8 +44,15 @@ export class LeafletMapPage implements OnInit {
   eventHandlerAssigned=false;
   API_URL_PHOTO= environment.api_photo;
   idElement:any;
+  tramo: TramoModel;
   elementTramo : ElementTramoModel;
   user : UsuarioModel;
+  
+  markerPoint:any;
+  tramoSelect:any;
+  lineSelect:any;
+
+
   constructor(    
     private geolocation: Geolocation,
     private elementTramoService: ElementTramoService,
@@ -58,7 +67,7 @@ export class LeafletMapPage implements OnInit {
 
   ngOnInit() {
     this.user=localStorage.getItem('currentUser')?JSON.parse(localStorage.getItem('currentUser')):null;
-
+    
     /*JSON.localStorage.getItem('currentUser');
 
     localStorage.setItem("currentUser",JSON.stringify( result.user));*/
@@ -70,11 +79,16 @@ export class LeafletMapPage implements OnInit {
     if(!this.map){
       this.loadMap();    
       this.addVias();
+      this.addPoints();
     }
 
-    this.addPoints();
+   
 
-    this.myInterval=setInterval(()=>{ this.getCurrentPoint(false); }, 5000);
+    if(this.user.id_rol==1){
+      this.myInterval=setInterval(()=>{ this.getCurrentPoint(false); }, 5000);
+
+    }
+    
     
     if(this.user.id_rol>1){
       this.myInterval2=setInterval(()=>{ this.addPoints(); }, 60000);
@@ -98,7 +112,11 @@ export class LeafletMapPage implements OnInit {
   })
  .addTo(this.map); 
 
-
+ 
+ /*if(this.user.id_rol==1){
+  this.getCurrentPoint(true);
+ }
+*/
 this.getCurrentPoint(true);
 
 /*
@@ -126,7 +144,7 @@ esri.dynamicMapLayer({
         this.dataLocation=data;
         (init)? this.currentLocation(this.initZoom):false;
        
-        (this.currentLocationMarker)?this.removeMarker(this.currentLocationMarker):true;
+        (this.currentLocationMarker)?this.removeFeature(this.currentLocationMarker):true;
      
         this.currentLocationMarker = this.addMarkerCurrentLocation(data.coords.latitude,data.coords.longitude);
 
@@ -144,19 +162,37 @@ esri.dynamicMapLayer({
     const location=(zoom)? this.map.setView(new L.LatLng( this.dataLocation.coords.latitude, this.dataLocation.coords.longitude),20):this.map.setView(new L.LatLng( this.dataLocation.coords.latitude, this.dataLocation.coords.longitude));
   }
 
-  removeMarker(marker){
+  removeFeature(marker){
     this.map.removeLayer(marker)
   }
 
 
+  
+
     addMarker(latitude, longitude){
       var marker_icon = L.icon({
-        iconUrl: 'assets/img/marker-icon.png',
-        iconSize:     [20,30],
+        iconUrl: 'assets/img/red-dot.png',
+        iconSize:     [24,24],
       
       });
-     return L.marker([latitude, longitude], {icon: marker_icon}).addTo(this.map);
+     return L.marker([latitude, longitude], {icon: marker_icon,opacity:0.8}).addTo(this.map);
     }
+
+
+    addMarkerSelect(latitude, longitude){
+      (this.markerPoint)?this.removeFeature(this.markerPoint):true;
+      var marker_icon = L.icon({
+        iconUrl: 'assets/img/blue-dot.png',
+        iconSize:     [30,30],
+      
+      });
+
+      this.markerPoint=L.marker([latitude, longitude], {icon: marker_icon}).addTo(this.map);
+    }
+
+
+
+
 
     addMarkerCurrentLocation(latitude, longitude){
       
@@ -175,7 +211,7 @@ esri.dynamicMapLayer({
 
     removePoints(){
       this.elementTramoMarkerList.map(marker=>{
-        this.removeMarker(marker);
+        this.removeFeature(marker);
       });
       this.elementTramoMarkerList =[];
     }
@@ -190,17 +226,11 @@ esri.dynamicMapLayer({
         if(p.latitud && p.longitud){          
           console.log('p.latitud , p.longitud>>',p.latitud , p.longitud);
           const marker=this.addMarker(p.latitud,p.longitud);
-
-          /*let html=document.getElementById("popup").innerHTML;*/
-          /*marker.bindPopup(`Tramo: ${p.tramo.nombre}<br>Elemento: ${p.elemento} <br> <ion-button [routerLink]="['/element-tramo-update']" >Ver</ion-button>`  */
-          /*marker.bindPopup(`Tramo: ${p.tramo.nombre}<br>Elemento: ${p.elemento} <br> <ion-button class="norwayLink">Ver</ion-button>`*/
-          /*marker.bindPopup(html);*/
-          
           
           marker.on('click', (e)=> {
-            
+            this.cerrarPopup();
             this.elementTramo=p;
-          
+            this.addMarkerSelect(p.latitud,p.longitud);
 
           });
           
@@ -209,34 +239,8 @@ esri.dynamicMapLayer({
 
         });
 
-        /*
-        function flyToNorway(){
-          this.navCtrl.navigateForward("/element-tramo-update");
-        }
 
-        this.map.on('popupopen', function(){
-
-          if (  document.querySelector('.norwayLink')){
-            const link = document.querySelector('.norwayLink')
-            link.addEventListener('click',flyToNorway);
-           
-          }
-        
-        });
-  
-  
-        this.map.on('popupclose', function(){
-          document.querySelector('.norwayLink').removeEventListener('click', flyToNorway)
-           eventHandlerAssigned = false
-        })*/
-
-        
       });
-
-
-
-
-
 
 
     }
@@ -261,34 +265,26 @@ esri.dynamicMapLayer({
               return [element[1],element[0]]
             });
   
-            console.log(coords);
+       
 
             
-            var myStyle =
-            {
-                fillColor: '#1c9099',
-              color:'red',
-                weight: 10
-            };
+           const polyline= this.addLine(coords);
+
+            /*
+          polyline.bindPopup(`Tramo: ${v.nombre} <br> <a href="/">Ver </a>`);
+            */
+                  
+          polyline.on('click', (e)=> {
+           
+            this.cerrarPopup();
+            this.tramo = v;
+            this.addLineSelect(coords);
+            /*this.elementTramo=p;
+            this.addMarkerSelect(p.latitud,p.longitud);*/
+
+          });
 
 
-           var polyline = L.polyline(
-            coords
-          ).addTo(this.map);
-          polyline.setStyle(myStyle);
-          polyline.bindPopup(`Tramo: ${v.nombre}`);
-
-          /*
-          
-        
-var polygon = L.polygon(
-    [[51.509, -0.08],
-    [51.503, -0.06],
-    [51.51, -0.047]]);
-polygon.setStyle(myStyle)
-          
-          */
-  
           }
       
         
@@ -300,6 +296,39 @@ polygon.setStyle(myStyle)
 
     }
 
+    addLine(coords){
+      var myStyle =
+      {
+          fillColor: '#1c9099',
+          color:'red',
+          weight: 8,
+          opacity:0.8
+      };
+
+
+     return L.polyline(
+      coords
+    ).setStyle(myStyle).addTo(this.map);
+    }
+
+
+    addLineSelect(coords){
+      (this.lineSelect)?this.removeFeature(this.lineSelect):null;
+      
+      var myStyle =
+      {
+          
+        
+          weight: 10
+      };
+
+
+      this.lineSelect = L.polyline(
+      coords
+    ).setStyle(myStyle).addTo(this.map);
+    
+
+    }
 
 
   add(){
@@ -326,8 +355,11 @@ polygon.setStyle(myStyle)
       clearInterval(this.myInterval2);
     }
     
-    this.map.remove();
+    if(this.user.id_rol==1){
+      this.map.remove();
     this.map = null;
+    }
+    
   }
 
 logout(){
@@ -335,8 +367,19 @@ logout(){
 }
 
 
-goUpdate(){
+goElement(){
   this.router.navigate(['/element-tramo-update',this.elementTramo.id]);  
   /*this.navCtrl.navigateForward(`/element-tramo-update/${this.elementTramo.id}`);*/
 }
+
+goTramo(){
+  this.router.navigate(['/tramo',this.tramo.id]);  
+  
+}
+
+cerrarPopup(){
+  this.tramo =null;
+  this.elementTramo=null;
+}
+
 }
