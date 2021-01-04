@@ -2,7 +2,7 @@
   <ion-toolbar>
     <img src="assets/img/geocleta.jpg"  style="display:inline-block" height="40px" > 
    
-    <ion-title style="display:inline-block" >Repo-geocleta</ion-title>
+    <ion-title style="display:inline-block" >Geocleta</ion-title>
     <ion-button  style="display:inline-block" slot="end" size="small" type="submit"  color="primary" (click)="logout()"> <ion-icon name="exit"></ion-icon> </ion-button>
   </ion-toolbar>
 </ion-header>
@@ -23,31 +23,25 @@
         <ion-fab-button *ngIf="user.id_rol==1" id="addPoint" (click)="add()"><ion-icon name="add"></ion-icon></ion-fab-button>
         <ion-fab-button id="currentLocation" (click)="currentLocation()"><ion-icon name="locate"></ion-icon></ion-fab-button>
 
-        <div id="popup" *ngIf="elementTramo">
-          <!--
-          <ion-grid>
+        <div class="popup" *ngIf="elementTramo" >
+  
+        
+        <ion-item>
+          
+          <label><strong>Detalle de la observacion</strong></label>
+          <ion-button fill="clear" (click)="cerrarPopup()" ><ion-icon name="close-circle-outline"  ></ion-icon>
+          </ion-button> 
+        </ion-item>
+          
 
-            <ion-row>
-              <ion-col size="12">
-                <ion-label> Tramo:{{elementTramo.tramo.nombre}} </ion-label>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col size="12">
-                <ion-label> Elemento: {{elementTramo.elemento}} </ion-label>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-
-        -->
         <ion-grid>
+   
 
           <ion-row>
             <ion-col size="3">
               <ion-avatar>
                 <img src="{{API_URL_PHOTO}}{{elementTramo.img}}">
               </ion-avatar>
-           
             </ion-col>
 
             <ion-col size="9">
@@ -59,22 +53,49 @@
                  Observacion: {{elementTramo.observacion}}
               </ion-row>
               <ion-row>
-                <ion-button (click)="goUpdate()">Ver </ion-button>
+                <ion-button size="small" (click)="goElement()">Ver </ion-button>
               </ion-row>
             </ion-col>
             
 
           </ion-row>
-
-         
-
         </ion-grid>
-
-      
-      
-     
-         
         </div>
+
+
+
+
+        <div class="popup" *ngIf="tramo" >
+  
+        
+          <ion-item>
+            
+            <label><strong>Tramo</strong></label>
+            <ion-button fill="clear" (click)="cerrarPopup()" ><ion-icon name="close-circle-outline"  ></ion-icon>
+            </ion-button> 
+          </ion-item>
+            
+  
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12">
+                <ion-row>
+                   Nombre:{{tramo.nombre}} 
+                </ion-row>
+  
+              
+              </ion-col>
+              <ion-row>
+                <ion-button size="small" (click)="goTramo()">Ver </ion-button>
+              </ion-row>
+  
+            </ion-row>
+          </ion-grid>
+          </div>
+  
+  
+
+
     </div>
   </div>
 

@@ -25,7 +25,8 @@ import {LoadingController}  from  '@ionic/angular';
 
 import {environment} from 'src/environments/environment';
 import { async } from '@rxweb/reactive-form-validators';
-import { Platform } from '@ionic/angular';
+import { Platform,IonContent} from '@ionic/angular';
+
 
 @Component({
   selector: 'app-element-tramo-update',

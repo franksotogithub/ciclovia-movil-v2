@@ -2,7 +2,7 @@ import { Component ,OnInit, ViewChild} from '@angular/core';
 import { PuntoCicloViaModel } from '../model/punto_ciclo_via/puntoCicloVia.model';
 import { PuntoCicloviaService } from '../services/punto-ciclovia.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { AlertController, LoadingController, Platform }  from '@ionic/angular';
+import { AlertController, LoadingController, Platform,IonContent }  from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { RxFormBuilder } from '@rxweb/reactive-form-validators';
 import { TramoService } from '../services/tramo.service';
@@ -14,6 +14,7 @@ import { WebView } from '@ionic-native/ionic-webview/ngx';
 import {Camera,CameraOptions} from '@ionic-native/camera/ngx';
 import { FileService } from '../services/file.service';
 import { File, IWriteOptions,FileEntry } from '@ionic-native/File/ngx';
+
 @Component({
   selector: 'app-tramo',
   templateUrl: './tramo.page.html',
@@ -135,6 +136,8 @@ export class TramoPage implements OnInit {
 
   loading:any;
 
+  @ViewChild(IonContent) content: IonContent;
+
   constructor(    
     public alertController: AlertController,
     private puntoCicloviaService: PuntoCicloviaService,
@@ -162,12 +165,16 @@ export class TramoPage implements OnInit {
     this.route.params.subscribe(params => {
          let id = parseInt(params.id); 
          
-         /*this.tramoService.getTramo(id).subscribe(res=>{
-            this.tramo=(res)?res:new TramoModel();
+         this.tramoService.getTramo(id).subscribe(res=>{
+
+          console.log('res>>',res);
+          this.tramo= new TramoModel(res);
+          this.initUsuario();
+            /*this.tramo=(res)? new TramoModel(res):new TramoModel();
             this.initUsuario();
-            
-         });*/
-         this.tramo = new TramoModel();
+            */
+         });
+         /*this.tramo = new TramoModel();*/
     });
 
     
@@ -209,7 +216,7 @@ export class TramoPage implements OnInit {
   
   regresar(){    
     console.log('holass')
-    this.navCtrl.navigateRoot("/element-tramo");     
+    this.navCtrl.navigateForward("/leaflet-map");      
    
   }
 
@@ -385,5 +392,8 @@ readFileAndSave(){
   
 }
 
+scrollToTop() {
+  this.content.scrollToTop(400);
+}
 
 }

@@ -1,6 +1,6 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
+  <ion-toolbar color="primary">
+    <ion-buttons   slot="start">
       
       <ion-button (click)="regresar()" ><ion-icon name="arrow-back-outline" ></ion-icon></ion-button>
       <ion-title>Tramo</ion-title>
@@ -11,17 +11,14 @@
 </ion-header>
 
 <ion-content >
-<!--
-  <ion-header collapse="condense">
-    <ion-toolbar>
-     
-    </ion-toolbar>
-  </ion-header>
--->
-<!--
-  <ion-title size="large">Tramo </ion-title>
 
--->
+
+  <ion-fab horizontal="end" vertical="center" slot="fixed">
+    <ion-fab-button color="danger">
+      <ion-icon name="arrow-up-circle-outline" (click)="scrollToTop()"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 <ion-grid>
 
   <ion-row>
@@ -29,9 +26,7 @@
       <div padding *ngIf="tramo">
         
         <ion-item>
-          <ion-label>Ciclovia/Via:</ion-label>
-      
-        
+          <ion-label>Ciclovia:</ion-label>
           <ion-input [(ngModel)]="tramo.nombre_via" ></ion-input>     
         </ion-item>
        
@@ -265,12 +260,15 @@
          
             </ng-container>
             <ng-template #temp1>
-
-              <ion-select  [(ngModel)]="tramo[item.nombre]"  (ionChange)="onChange($event,item)" >                
-                <ion-select-option *ngFor="let item2 of senial_otros"  value="{{item2.value}}"  >
-                  {{ item2.text}}
-                </ion-select-option>
-              </ion-select>
+              <ion-item>
+                <ion-label position="stacked" >Otro(seleccione): </ion-label>
+                <ion-select  [(ngModel)]="tramo[item.nombre]"  (ionChange)="onChange($event,item)" >                
+                  <ion-select-option *ngFor="let item2 of senial_otros"  value="{{item2.value}}"  >
+                    {{ item2.text}}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              
 
             </ng-template>
             
